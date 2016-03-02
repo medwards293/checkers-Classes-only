@@ -34,6 +34,48 @@ namespace Checkers
             return this.tableLayoutPanel1.BackColor.ToString();
 
         }
+        
+        public void setForeColor(string newColor)
+        {
+            this.label1.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label2.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label3.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label4.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label5.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label6.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label7.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label8.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label9.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label10.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label11.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label12.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label13.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label14.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label15.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label16.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label17.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label18.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label19.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label20.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label21.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label22.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label23.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label24.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label25.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label26.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label27.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label28.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label29.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label30.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label31.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label32.BackColor = System.Drawing.Color.FromName(newColor);
+            this.label33.BackColor = System.Drawing.Color.FromName(newColor);
+        }
+
+        public string getForeColor()
+        {
+            return this.label1.BackColor.ToString();
+        }
 
         #region Windows Form Designer generated code
         
