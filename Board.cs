@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -76,6 +76,7 @@ namespace Checkers
                     }
                     else
                         unHighlightMovesGreen(firstClicked);
+
                     firstClicked = null;
                     secondClicked = null;
                 
@@ -102,7 +103,7 @@ namespace Checkers
                     firstClicked.Image = null;
                     firstClicked.ForeColor = Color.Black;
 
-                    firstClicked.BackColor = Color.Black;
+                    firstClicked.BackColor = backColor.BackColor;
 
                     firstClicked = null;
                     secondClicked = null;
