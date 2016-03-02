@@ -206,5 +206,4 @@ namespace Checkers
         }
         
     }
-    }
 }
