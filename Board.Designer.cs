@@ -1,11 +1,13 @@
-﻿using System.Windows.Forms;
+using System.Windows.Forms;
 using System.Drawing;
 
 namespace Checkers
 {
     partial class Board
     {
-        string backColor;
+        Label backColor;
+
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -34,55 +36,13 @@ namespace Checkers
             return this.tableLayoutPanel1.BackColor.ToString();
 
         }
-        
-        public void setForeColor(string newColor)
-        {
-            this.label1.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label2.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label3.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label4.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label5.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label6.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label7.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label8.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label9.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label10.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label11.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label12.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label13.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label14.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label15.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label16.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label17.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label18.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label19.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label20.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label21.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label22.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label23.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label24.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label25.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label26.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label27.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label28.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label29.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label30.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label31.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label32.BackColor = System.Drawing.Color.FromName(newColor);
-            this.label33.BackColor = System.Drawing.Color.FromName(newColor);
-        }
 
-        public string getForeColor()
-        {
-            return this.label1.BackColor.ToString();
-        }
-
-        #region Windows Form Designer generated code
-        
+               
         public void highlightMovesRed(Label clickedLabel)
         {
-            Label temp;
-            backColor = label1.BackColor.ToString();
+            Label temp = clickedLabel;
+            backColor = label33;
+            
             int col = this.tableLayoutPanel1.GetColumn(clickedLabel);
             int row = this.tableLayoutPanel1.GetRow(clickedLabel);
 
@@ -106,8 +66,8 @@ namespace Checkers
 
         public void unHighlightMovesRed(Label label)
         {
-            Label temp;
-            
+            Label temp = label;
+
             int col = this.tableLayoutPanel1.GetColumn(label);
             int row = this.tableLayoutPanel1.GetRow(label);
 
@@ -119,20 +79,21 @@ namespace Checkers
             {
 
                 temp = (Label)tableLayoutPanel1.GetControlFromPosition(leftCol, forwardRow);
-                temp.BackColor = Color.Black;
+                temp.BackColor = backColor.BackColor;
             }
 
             if (rightCol <= 7)
             {
                 temp = (Label)tableLayoutPanel1.GetControlFromPosition(rightCol, forwardRow);
-                temp.BackColor = Color.Black;
+                temp.BackColor = backColor.BackColor;
             }
         }
 
         public void highlightMovesGreen(Label clickedLabel)
         {
-            Label temp;
-            backColor = label1.BackColor.ToString();
+            Label temp = clickedLabel;
+            backColor = clickedLabel;
+
             int col = this.tableLayoutPanel1.GetColumn(clickedLabel);
             int row = this.tableLayoutPanel1.GetRow(clickedLabel);
 
@@ -155,7 +116,7 @@ namespace Checkers
         }
         public void unHighlightMovesGreen(Label label)
         {
-            Label temp;
+            Label temp = label;
 
             int col = this.tableLayoutPanel1.GetColumn(label);
             int row = this.tableLayoutPanel1.GetRow(label);
@@ -168,15 +129,18 @@ namespace Checkers
             {
 
                 temp = (Label)tableLayoutPanel1.GetControlFromPosition(leftCol, rearRow);
-                temp.BackColor = Color.Black;
+                temp.BackColor = backColor.BackColor;
             }
 
             if (rightCol <= 7)
             {
                 temp = (Label)tableLayoutPanel1.GetControlFromPosition(rightCol, rearRow);
-                temp.BackColor = Color.Black;
+                temp.BackColor = backColor.BackColor;
             }
         }
+
+        #region Windows Form Designer generated code
+
         /// <summary>
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
@@ -216,6 +180,7 @@ namespace Checkers
             this.label30 = new System.Windows.Forms.Label();
             this.label31 = new System.Windows.Forms.Label();
             this.label32 = new System.Windows.Forms.Label();
+            this.label33 = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -746,6 +711,19 @@ namespace Checkers
             this.label32.TabIndex = 31;
             this.label32.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.label32.Click += new System.EventHandler(this.label_Click);
+
+            this.label33.AutoSize = true;
+            this.label33.BackColor = System.Drawing.Color.Black;
+            this.label33.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label33.ForeColor = System.Drawing.Color.Green;
+            this.label33.Image = global::Checkers.Properties.Resources.checkerGreen;
+            this.label33.Location = new System.Drawing.Point(182, 2);
+            this.label33.Margin = new System.Windows.Forms.Padding(0);
+            this.label33.Name = "label33";
+            this.label33.Size = new System.Drawing.Size(58, 55);
+            this.label33.TabIndex = 1;
+            this.label33.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label33.Click += new System.EventHandler(this.label_Click);
             // 
             // Board
             // 
@@ -796,5 +774,6 @@ namespace Checkers
         private System.Windows.Forms.Label label30;
         private System.Windows.Forms.Label label31;
         private System.Windows.Forms.Label label32;
+        private System.Windows.Forms.Label label33;
     }
 }
