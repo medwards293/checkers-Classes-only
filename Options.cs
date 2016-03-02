@@ -192,17 +192,17 @@ namespace Checkers
         //Player 1 piece color
         private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            Form1.getBoardName().setPlayer1Checker(Properties.Resources.checkerRed);
         }
         //player 2 piece color
         private void comboBox4_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            Form1.getBoardName().setPlayer2Checker(Properties.Resources.checkerGreen);
         }
         //highlighting option on or off
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-
+            Form1.getBoardName().setHighlighting();
         }
         
     }
