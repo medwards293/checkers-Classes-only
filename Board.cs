@@ -15,6 +15,8 @@ namespace Checkers
         public Board()
         {
             InitializeComponent();
+            initializeCheckerBoard();
+            backColor = label33;
         }
 
 
@@ -34,6 +36,8 @@ namespace Checkers
 
             if (clickedLabel != null)
             {
+                int col = this.tableLayoutPanel1.GetColumn(clickedLabel);
+                int row = this.tableLayoutPanel1.GetRow(clickedLabel);
                 // If the clicked label is black, the player clicked
                 // an icon that's already been revealed --
                 // ignore the click
@@ -52,30 +56,35 @@ namespace Checkers
                 // If fist clicked is null and current clicked isn't empty and isn't green
                 // set first clicked to this square and highlight this square using appropriate 
                 // checker(Red) on highlighted square
-                if (firstClicked == null && clickedLabel.ForeColor != Color.Black && clickedLabel.ForeColor == Color.Red)
+                if (firstClicked == null && board[col,row].isOccupied == true && board[col,row].player1Checker == true && player1Turn == true )
                 {
                     firstClicked = clickedLabel;
-                    highlightMovesRed(clickedLabel);
+                    if (highlighting) highlightMovesRed(clickedLabel);
                     firstClicked.BackColor = Color.GreenYellow;
+                    board[col, row].isOccupied = false;
                 }
                 // this is the same as the if loop, except it is for the condition of a green checker
                 // instead of a red checker. Then sets the first clicked square to a 
                 // green checker on a highlighted square
-                else if (firstClicked == null && clickedLabel.ForeColor != Color.Black && clickedLabel.ForeColor == Color.Green)
+                else if (firstClicked == null && board[col, row].isOccupied == true && board[col,row].player1Checker == false && player1Turn == false)
                 {
                     firstClicked = clickedLabel;
-                    highlightMovesGreen(clickedLabel);
+                    if (highlighting) highlightMovesGreen(clickedLabel);
                     firstClicked.BackColor = Color.GreenYellow;
+                    board[col, row].isOccupied = false;
                 }
                 else if (firstClicked == clickedLabel)
                 {
-                    firstClicked.BackColor = Color.Black;
-                    if (firstClicked.ForeColor == Color.Red)
-                    {
-                        unHighlightMovesRed(firstClicked);
-                    }
-                    else
-                        unHighlightMovesGreen(firstClicked);
+                    firstClicked.BackColor = backColor.BackColor;
+                    board[col, row].isOccupied = true;
+
+                    if(highlighting)
+                        if (board[col, row].player1Checker == true)
+                        {
+                            unHighlightMovesRed(firstClicked);
+                        }
+                        else
+                            unHighlightMovesGreen(firstClicked);
 
                     firstClicked = null;
                     secondClicked = null;
@@ -83,31 +92,45 @@ namespace Checkers
                 }
                 // First clicked is NOT null, there for a checker to be moved has already been selected
                 // and it's location is highlighted, AND the destination square is empty(forecolor.black)
-                else if (firstClicked != null && clickedLabel.ForeColor == Color.Black)
+                else if (firstClicked != null && board[col,row].isOccupied == false)
                 {
+                    bool pieceMoved = false;
                     secondClicked = clickedLabel;
 
-                    if (firstClicked.ForeColor == Color.Red)
+                    if (player1Turn == true && player1CanMove(firstClicked, secondClicked))
                     {
-                        secondClicked.Image = Checkers.Properties.Resources.checkerRed;
-                        secondClicked.ForeColor = Color.Red;
-                        unHighlightMovesRed(firstClicked);
+                        secondClicked.Image = player1Checker;
+                        board[col, row].isOccupied = true;
+                        board[col, row].player1Checker = true;
+                        if (highlighting) unHighlightMovesRed(firstClicked);
+                        player1Turn = false;
+                        pieceMoved = true;
                     }
-                    else
+                    else if (player1Turn == false && player2CanMove(firstClicked, secondClicked))
                     {
-                        secondClicked.Image = Checkers.Properties.Resources.checkerGreen;
-                        secondClicked.ForeColor = Color.Green;
-                        unHighlightMovesGreen(firstClicked);
+                        secondClicked.Image = player2Checker;
+                        board[col, row].isOccupied = true;
+                        board[col, row].player1Checker = false;
+                        if (highlighting) unHighlightMovesGreen(firstClicked);
+                        player1Turn = true;
+                        pieceMoved = true;
                     }
+                    // if a piece was moved rest first/second clicked for next move
+                    // also reset fistClicked image and backcolor
+                    if (pieceMoved == true)
+                    {
+                        firstClicked.Image = null;
 
-                    firstClicked.Image = null;
-                    firstClicked.ForeColor = Color.Black;
+                        firstClicked.BackColor = backColor.BackColor;
 
-                    firstClicked.BackColor = backColor.BackColor;
-
-                    firstClicked = null;
-                    secondClicked = null;
-
+                        firstClicked = null;
+                        secondClicked = null;
+                    }
+                    // if no move was made, reset second clicked to test next move
+                    else 
+                    {
+                        secondClicked = null; 
+                    }
                     return;
                 }
             }
