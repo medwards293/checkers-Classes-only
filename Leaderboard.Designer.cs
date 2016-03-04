@@ -212,11 +212,10 @@ namespace Checkers
                     increment(pos, "wins");
             }
 
-
             if (loser != "computer")
             {
                 //if so do the same for loser
-                pos = findRecord(loser);
+                int pos = findRecord(loser);
                 if (pos == -1)
                 {
                     addNewRecord(loser, 0, 1);
