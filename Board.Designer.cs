@@ -1,11 +1,19 @@
-using System.Windows.Forms;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
 using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Checkers
 {
     partial class Board
     {
         Label backColor;
+        List<Label> canMove = new List<Label>();
 
         struct checkerBoard
         {
@@ -18,11 +26,125 @@ namespace Checkers
         bool highlighting = false;
         int checker1Count = 12;
         int checker2Count = 12;
+        bool secondJumpAvailable = false;
+        bool pieceJumped = false;
+        bool mustJump = false;
 
         System.Drawing.Bitmap player1Checker = Checkers.Properties.Resources.checkerRed;
         System.Drawing.Bitmap player2Checker = Checkers.Properties.Resources.checkerGreen;
 
         checkerBoard[,] board = new checkerBoard[8,8];
+
+        bool canJumpPlayer1(Label from, Label to)
+        {
+            bool jumpAvailable = false;
+            int fromCol = this.tableLayoutPanel1.GetColumn(from);
+            int fromRow = this.tableLayoutPanel1.GetRow(from);
+
+            int toCol = this.tableLayoutPanel1.GetColumn(to);
+            int toRow = this.tableLayoutPanel1.GetRow(to);
+
+            if (board[fromCol, fromRow].pieceIsKing == false && toRow >= 0 && toCol >= 0 && toCol <= 7)
+            {
+
+                if (!board[toCol, toRow].isOccupied && fromRow - 2 == toRow)
+                {
+                    jumpAvailable = true;                    
+                }
+                
+            }
+
+            return jumpAvailable;
+        }
+
+        bool canJumpPlayer2(Label from, Label to)
+        {
+            bool jumpAvailable = false;
+            int fromCol = this.tableLayoutPanel1.GetColumn(from);
+            int fromRow = this.tableLayoutPanel1.GetRow(from);
+
+            int toCol = this.tableLayoutPanel1.GetColumn(to);
+            int toRow = this.tableLayoutPanel1.GetRow(to);
+
+            if (board[fromCol, fromRow].pieceIsKing == false && toRow >= 0 && toCol >= 0 && toCol <= 7)
+            {
+
+                if (!board[toCol, toRow].isOccupied && fromRow + 2 == toRow)
+                {
+                    jumpAvailable = true;
+                }
+
+            }
+
+            return jumpAvailable;
+        }
+        bool canJumpAgainPlayer1(Label clicked)
+        {
+            secondJumpAvailable = false;
+            int fromCol = this.tableLayoutPanel1.GetColumn(clicked);
+            int fromRow = this.tableLayoutPanel1.GetRow(clicked);
+
+            int toLeftCol = fromCol - 1;
+            int toRightCol = fromCol + 1;
+            int toRow = fromRow - 1;
+
+            
+
+            if (board[fromCol, fromRow].pieceIsKing == false && toRow >= 0 && fromCol >= 0 && fromCol <= 7)
+            {
+
+                if (toRow >= 0 && toLeftCol >= 0 && board[toLeftCol, toRow].isOccupied && board[toLeftCol, toRow].player1Checker == false)
+                {
+                    if (toRow >= 1 && toLeftCol >= 1 && board[toLeftCol -1, toRow -1].isOccupied == false)
+                    {
+                        secondJumpAvailable = true;
+                    }
+                }
+                if (toRow >= 0 && toRightCol <= 7 && board[toRightCol, toRow].isOccupied && board[toRightCol, toRow].player1Checker == false)
+                {
+                    if (toRow >= 1 && toRightCol <= 6 && board[toRightCol+1,toRow-1].isOccupied == false)
+                    {
+                        secondJumpAvailable = true;
+                    }
+                }
+            }
+
+            return secondJumpAvailable;
+        }
+
+        bool canJumpAgainPlayer2(Label clicked)
+        {
+            secondJumpAvailable = false;
+            int fromCol = this.tableLayoutPanel1.GetColumn(clicked);
+            int fromRow = this.tableLayoutPanel1.GetRow(clicked);
+
+            int toLeftCol = fromCol - 1;
+            int toRightCol = fromCol + 1;
+            int toRow = fromRow + 1;
+
+
+
+            if (board[fromCol, fromRow].pieceIsKing == false && toRow >= 0 && fromCol >= 0 && fromCol <= 7)
+            {
+
+                if (toRow <= 7 && toLeftCol >= 0 && board[toLeftCol, toRow].isOccupied && board[toLeftCol, toRow].player1Checker == true)
+                {
+                    if (toRow < 7 && toLeftCol >= 1 && board[toLeftCol - 1, toRow + 1].isOccupied == false)
+                    {
+                        secondJumpAvailable = true;
+                    }
+                }
+                if (toRow < 7 && toRightCol <= 7 && board[toRightCol, toRow].isOccupied && board[toRightCol, toRow].player1Checker == true)
+                {
+                    if (toRow >= 1 && toRightCol <= 6 && board[toRightCol + 1, toRow + 1].isOccupied == false)
+                    {
+                        secondJumpAvailable = true;
+                    }
+                }
+            }
+
+            return secondJumpAvailable;
+        }
 
         public void setPlayer1Checker(System.Drawing.Bitmap checker1)
         {
@@ -43,7 +165,7 @@ namespace Checkers
             int toCol = this.tableLayoutPanel1.GetColumn(to);
             int toRow = this.tableLayoutPanel1.GetRow(to);
 
-            if (board[fromCol, toCol].pieceIsKing == false)
+            if (board[fromCol, fromRow].pieceIsKing == false)
             {
 
                 if (toCol >= 0 && toCol <= 7 && board[toCol, toRow].isOccupied == false)
@@ -80,7 +202,7 @@ namespace Checkers
             int toCol = this.tableLayoutPanel1.GetColumn(to);
             int toRow = this.tableLayoutPanel1.GetRow(to);
 
-            if (board[fromCol, toCol].pieceIsKing == false)
+            if (board[fromCol, fromRow].pieceIsKing == false)
             {
 
                 if (toCol >= 0 && toCol <= 7 && board[toCol, toRow].isOccupied == false)
@@ -115,6 +237,8 @@ namespace Checkers
             board[col,row].isOccupied = false;
             board[col, row].player1Checker = false;
             board[col, row].pieceIsKing = false;
+            pieceJumped = true;
+            
             if (player1Turn)
                 checker2Count--;
             else
@@ -225,6 +349,7 @@ namespace Checkers
 
         public void setForeColor(string newColor)
         {
+
             this.label1.BackColor = System.Drawing.Color.FromName(newColor);
             this.label2.BackColor = System.Drawing.Color.FromName(newColor);
             this.label3.BackColor = System.Drawing.Color.FromName(newColor);
@@ -480,8 +605,8 @@ namespace Checkers
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.Black;
             this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label1.ForeColor = System.Drawing.Color.Green;
-            this.label1.Image = player2Checker;
+            this.label1.ForeColor = System.Drawing.Color.Black;
+            this.label1.Image = global::Checkers.Properties.Resources.checkerGreen;
             this.label1.Location = new System.Drawing.Point(62, 2);
             this.label1.Margin = new System.Windows.Forms.Padding(0);
             this.label1.Name = "label1";
@@ -495,8 +620,8 @@ namespace Checkers
             this.label2.AutoSize = true;
             this.label2.BackColor = System.Drawing.Color.Black;
             this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label2.ForeColor = System.Drawing.Color.Green;
-            this.label2.Image = player2Checker;
+            this.label2.ForeColor = System.Drawing.Color.Black;
+            this.label2.Image = global::Checkers.Properties.Resources.checkerGreen;
             this.label2.Location = new System.Drawing.Point(182, 2);
             this.label2.Margin = new System.Windows.Forms.Padding(0);
             this.label2.Name = "label2";
@@ -510,8 +635,8 @@ namespace Checkers
             this.label3.AutoSize = true;
             this.label3.BackColor = System.Drawing.Color.Black;
             this.label3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label3.ForeColor = System.Drawing.Color.Green;
-            this.label3.Image = player2Checker;
+            this.label3.ForeColor = System.Drawing.Color.Black;
+            this.label3.Image = global::Checkers.Properties.Resources.checkerGreen;
             this.label3.Location = new System.Drawing.Point(302, 2);
             this.label3.Margin = new System.Windows.Forms.Padding(0);
             this.label3.Name = "label3";
@@ -525,8 +650,8 @@ namespace Checkers
             this.label4.AutoSize = true;
             this.label4.BackColor = System.Drawing.Color.Black;
             this.label4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label4.ForeColor = System.Drawing.Color.Green;
-            this.label4.Image = player2Checker;
+            this.label4.ForeColor = System.Drawing.Color.Black;
+            this.label4.Image = global::Checkers.Properties.Resources.checkerGreen;
             this.label4.Location = new System.Drawing.Point(422, 2);
             this.label4.Margin = new System.Windows.Forms.Padding(0);
             this.label4.Name = "label4";
@@ -540,8 +665,8 @@ namespace Checkers
             this.label5.AutoSize = true;
             this.label5.BackColor = System.Drawing.Color.Black;
             this.label5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label5.ForeColor = System.Drawing.Color.Green;
-            this.label5.Image = player2Checker;
+            this.label5.ForeColor = System.Drawing.Color.Black;
+            this.label5.Image = global::Checkers.Properties.Resources.checkerGreen;
             this.label5.Location = new System.Drawing.Point(2, 59);
             this.label5.Margin = new System.Windows.Forms.Padding(0);
             this.label5.Name = "label5";
@@ -555,8 +680,8 @@ namespace Checkers
             this.label6.AutoSize = true;
             this.label6.BackColor = System.Drawing.Color.Black;
             this.label6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label6.ForeColor = System.Drawing.Color.Green;
-            this.label6.Image = player2Checker;
+            this.label6.ForeColor = System.Drawing.Color.Black;
+            this.label6.Image = global::Checkers.Properties.Resources.checkerGreen;
             this.label6.Location = new System.Drawing.Point(122, 59);
             this.label6.Margin = new System.Windows.Forms.Padding(0);
             this.label6.Name = "label6";
@@ -570,8 +695,8 @@ namespace Checkers
             this.label7.AutoSize = true;
             this.label7.BackColor = System.Drawing.Color.Black;
             this.label7.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label7.ForeColor = System.Drawing.Color.Green;
-            this.label7.Image = player2Checker;
+            this.label7.ForeColor = System.Drawing.Color.Black;
+            this.label7.Image = global::Checkers.Properties.Resources.checkerGreen;
             this.label7.Location = new System.Drawing.Point(242, 59);
             this.label7.Margin = new System.Windows.Forms.Padding(0);
             this.label7.Name = "label7";
@@ -585,8 +710,8 @@ namespace Checkers
             this.label8.AutoSize = true;
             this.label8.BackColor = System.Drawing.Color.Black;
             this.label8.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label8.ForeColor = System.Drawing.Color.Green;
-            this.label8.Image = player2Checker;
+            this.label8.ForeColor = System.Drawing.Color.Black;
+            this.label8.Image = global::Checkers.Properties.Resources.checkerGreen;
             this.label8.Location = new System.Drawing.Point(362, 59);
             this.label8.Margin = new System.Windows.Forms.Padding(0);
             this.label8.Name = "label8";
@@ -600,8 +725,8 @@ namespace Checkers
             this.label9.AutoSize = true;
             this.label9.BackColor = System.Drawing.Color.Black;
             this.label9.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label9.ForeColor = System.Drawing.Color.Green;
-            this.label9.Image = player2Checker;
+            this.label9.ForeColor = System.Drawing.Color.Black;
+            this.label9.Image = global::Checkers.Properties.Resources.checkerGreen;
             this.label9.Location = new System.Drawing.Point(62, 115);
             this.label9.Margin = new System.Windows.Forms.Padding(0);
             this.label9.Name = "label9";
@@ -615,8 +740,8 @@ namespace Checkers
             this.label10.AutoSize = true;
             this.label10.BackColor = System.Drawing.Color.Black;
             this.label10.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label10.ForeColor = System.Drawing.Color.Green;
-            this.label10.Image = player2Checker;
+            this.label10.ForeColor = System.Drawing.Color.Black;
+            this.label10.Image = global::Checkers.Properties.Resources.checkerGreen;
             this.label10.Location = new System.Drawing.Point(182, 115);
             this.label10.Margin = new System.Windows.Forms.Padding(0);
             this.label10.Name = "label10";
@@ -630,8 +755,8 @@ namespace Checkers
             this.label11.AutoSize = true;
             this.label11.BackColor = System.Drawing.Color.Black;
             this.label11.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label11.ForeColor = System.Drawing.Color.Green;
-            this.label11.Image = player2Checker;
+            this.label11.ForeColor = System.Drawing.Color.Black;
+            this.label11.Image = global::Checkers.Properties.Resources.checkerGreen;
             this.label11.Location = new System.Drawing.Point(302, 115);
             this.label11.Margin = new System.Windows.Forms.Padding(0);
             this.label11.Name = "label11";
@@ -645,8 +770,8 @@ namespace Checkers
             this.label12.AutoSize = true;
             this.label12.BackColor = System.Drawing.Color.Black;
             this.label12.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label12.ForeColor = System.Drawing.Color.Green;
-            this.label12.Image = player2Checker;
+            this.label12.ForeColor = System.Drawing.Color.Black;
+            this.label12.Image = global::Checkers.Properties.Resources.checkerGreen;
             this.label12.Location = new System.Drawing.Point(422, 115);
             this.label12.Margin = new System.Windows.Forms.Padding(0);
             this.label12.Name = "label12";
@@ -764,8 +889,8 @@ namespace Checkers
             this.label21.AutoSize = true;
             this.label21.BackColor = System.Drawing.Color.Black;
             this.label21.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label21.ForeColor = System.Drawing.Color.Red;
-            this.label21.Image = player1Checker;
+            this.label21.ForeColor = System.Drawing.Color.Black;
+            this.label21.Image = global::Checkers.Properties.Resources.checkerRed;
             this.label21.Location = new System.Drawing.Point(2, 287);
             this.label21.Margin = new System.Windows.Forms.Padding(0);
             this.label21.Name = "label21";
@@ -779,8 +904,8 @@ namespace Checkers
             this.label22.AutoSize = true;
             this.label22.BackColor = System.Drawing.Color.Black;
             this.label22.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label22.ForeColor = System.Drawing.Color.Red;
-            this.label22.Image = player1Checker;
+            this.label22.ForeColor = System.Drawing.Color.Black;
+            this.label22.Image = global::Checkers.Properties.Resources.checkerRed;
             this.label22.Location = new System.Drawing.Point(122, 287);
             this.label22.Margin = new System.Windows.Forms.Padding(0);
             this.label22.Name = "label22";
@@ -794,8 +919,8 @@ namespace Checkers
             this.label23.AutoSize = true;
             this.label23.BackColor = System.Drawing.Color.Black;
             this.label23.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label23.ForeColor = System.Drawing.Color.Red;
-            this.label23.Image = player1Checker;
+            this.label23.ForeColor = System.Drawing.Color.Black;
+            this.label23.Image = global::Checkers.Properties.Resources.checkerRed;
             this.label23.Location = new System.Drawing.Point(242, 287);
             this.label23.Margin = new System.Windows.Forms.Padding(0);
             this.label23.Name = "label23";
@@ -809,8 +934,8 @@ namespace Checkers
             this.label24.AutoSize = true;
             this.label24.BackColor = System.Drawing.Color.Black;
             this.label24.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label24.ForeColor = System.Drawing.Color.Red;
-            this.label24.Image = player1Checker;
+            this.label24.ForeColor = System.Drawing.Color.Black;
+            this.label24.Image = global::Checkers.Properties.Resources.checkerRed;
             this.label24.Location = new System.Drawing.Point(362, 287);
             this.label24.Margin = new System.Windows.Forms.Padding(0);
             this.label24.Name = "label24";
@@ -824,8 +949,8 @@ namespace Checkers
             this.label25.AutoSize = true;
             this.label25.BackColor = System.Drawing.Color.Black;
             this.label25.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label25.ForeColor = System.Drawing.Color.Red;
-            this.label25.Image = player1Checker;
+            this.label25.ForeColor = System.Drawing.Color.Black;
+            this.label25.Image = global::Checkers.Properties.Resources.checkerRed;
             this.label25.Location = new System.Drawing.Point(62, 344);
             this.label25.Margin = new System.Windows.Forms.Padding(0);
             this.label25.Name = "label25";
@@ -839,8 +964,8 @@ namespace Checkers
             this.label26.AutoSize = true;
             this.label26.BackColor = System.Drawing.Color.Black;
             this.label26.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label26.ForeColor = System.Drawing.Color.Red;
-            this.label26.Image = player1Checker;
+            this.label26.ForeColor = System.Drawing.Color.Black;
+            this.label26.Image = global::Checkers.Properties.Resources.checkerRed;
             this.label26.Location = new System.Drawing.Point(182, 344);
             this.label26.Margin = new System.Windows.Forms.Padding(0);
             this.label26.Name = "label26";
@@ -854,8 +979,8 @@ namespace Checkers
             this.label27.AutoSize = true;
             this.label27.BackColor = System.Drawing.Color.Black;
             this.label27.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label27.ForeColor = System.Drawing.Color.Red;
-            this.label27.Image = player1Checker;
+            this.label27.ForeColor = System.Drawing.Color.Black;
+            this.label27.Image = global::Checkers.Properties.Resources.checkerRed;
             this.label27.Location = new System.Drawing.Point(302, 344);
             this.label27.Margin = new System.Windows.Forms.Padding(0);
             this.label27.Name = "label27";
@@ -869,8 +994,8 @@ namespace Checkers
             this.label28.AutoSize = true;
             this.label28.BackColor = System.Drawing.Color.Black;
             this.label28.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label28.ForeColor = System.Drawing.Color.Red;
-            this.label28.Image = player1Checker;
+            this.label28.ForeColor = System.Drawing.Color.Black;
+            this.label28.Image = global::Checkers.Properties.Resources.checkerRed;
             this.label28.Location = new System.Drawing.Point(422, 344);
             this.label28.Margin = new System.Windows.Forms.Padding(0);
             this.label28.Name = "label28";
@@ -884,8 +1009,8 @@ namespace Checkers
             this.label29.AutoSize = true;
             this.label29.BackColor = System.Drawing.Color.Black;
             this.label29.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label29.ForeColor = System.Drawing.Color.Red;
-            this.label29.Image = player1Checker;
+            this.label29.ForeColor = System.Drawing.Color.Black;
+            this.label29.Image = global::Checkers.Properties.Resources.checkerRed;
             this.label29.Location = new System.Drawing.Point(2, 401);
             this.label29.Margin = new System.Windows.Forms.Padding(0);
             this.label29.Name = "label29";
@@ -899,8 +1024,8 @@ namespace Checkers
             this.label30.AutoSize = true;
             this.label30.BackColor = System.Drawing.Color.Black;
             this.label30.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label30.ForeColor = System.Drawing.Color.Red;
-            this.label30.Image = player1Checker;
+            this.label30.ForeColor = System.Drawing.Color.Black;
+            this.label30.Image = global::Checkers.Properties.Resources.checkerRed;
             this.label30.Location = new System.Drawing.Point(122, 401);
             this.label30.Margin = new System.Windows.Forms.Padding(0);
             this.label30.Name = "label30";
@@ -914,8 +1039,8 @@ namespace Checkers
             this.label31.AutoSize = true;
             this.label31.BackColor = System.Drawing.Color.Black;
             this.label31.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label31.ForeColor = System.Drawing.Color.Red;
-            this.label31.Image = player1Checker;
+            this.label31.ForeColor = System.Drawing.Color.Black;
+            this.label31.Image = global::Checkers.Properties.Resources.checkerRed;
             this.label31.Location = new System.Drawing.Point(242, 401);
             this.label31.Margin = new System.Windows.Forms.Padding(0);
             this.label31.Name = "label31";
@@ -929,8 +1054,8 @@ namespace Checkers
             this.label32.AutoSize = true;
             this.label32.BackColor = System.Drawing.Color.Black;
             this.label32.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label32.ForeColor = System.Drawing.Color.Red;
-            this.label32.Image = player1Checker;
+            this.label32.ForeColor = System.Drawing.Color.Black;
+            this.label32.Image = global::Checkers.Properties.Resources.checkerRed;
             this.label32.Location = new System.Drawing.Point(362, 401);
             this.label32.Margin = new System.Windows.Forms.Padding(0);
             this.label32.Name = "label32";
@@ -938,7 +1063,9 @@ namespace Checkers
             this.label32.TabIndex = 31;
             this.label32.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.label32.Click += new System.EventHandler(this.label_Click);
-
+            // 
+            // label33
+            // 
             this.label33.AutoSize = true;
             this.label33.BackColor = System.Drawing.Color.Black;
             this.label33.Dock = System.Windows.Forms.DockStyle.Fill;
