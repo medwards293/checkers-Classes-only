@@ -38,6 +38,8 @@ namespace Checkers
             {
                 int col = this.tableLayoutPanel1.GetColumn(clickedLabel);
                 int row = this.tableLayoutPanel1.GetRow(clickedLabel);
+
+                if (canMove != null) canMove.Clear();
                 // If the clicked label is black, the player clicked
                 // an icon that's already been revealed --
                 // ignore the click
@@ -53,32 +55,60 @@ namespace Checkers
                 // ForeColor.Green = Player 2
                 // ForeColor.Black = empty square
 
-                // If fist clicked is null and current clicked isn't empty and isn't green
-                // set first clicked to this square and highlight this square using appropriate 
-                // checker(Red) on highlighted square
-                if (firstClicked == null && board[col,row].isOccupied == true && board[col,row].player1Checker == true && player1Turn == true )
+                if (player1Turn)
                 {
-                    firstClicked = clickedLabel;
-                    if (highlighting) highlightMovesRed(clickedLabel);
-                    firstClicked.BackColor = Color.GreenYellow;
-                    board[col, row].isOccupied = false;
+                    for (int i = 0; i <= 7; i++)
+                    {
+                        for (int j = 0; j <= 7; j++)
+                        {
+                            Label temp = (Label)tableLayoutPanel1.GetControlFromPosition(i, j);
+                            if (temp != null && temp.ForeColor == Color.Black && canJumpAgainPlayer1(temp) && board[i, j].player1Checker)
+                                canMove.Add(temp);
+                        }
+                    }
                 }
-                // this is the same as the if loop, except it is for the condition of a green checker
-                // instead of a red checker. Then sets the first clicked square to a 
-                // green checker on a highlighted square
-                else if (firstClicked == null && board[col, row].isOccupied == true && board[col,row].player1Checker == false && player1Turn == false)
+                else
                 {
-                    firstClicked = clickedLabel;
-                    if (highlighting) highlightMovesGreen(clickedLabel);
-                    firstClicked.BackColor = Color.GreenYellow;
-                    board[col, row].isOccupied = false;
+                    for (int i = 0; i <= 7; i++)
+                    {
+                        for (int j = 0; j <= 7; j++)
+                        {
+                            Label temp = (Label)tableLayoutPanel1.GetControlFromPosition(i, j);
+                            if (temp != null && temp.ForeColor == Color.Black && canJumpAgainPlayer2(temp) && !board[i, j].player1Checker && board[i,j].isOccupied)
+                                canMove.Add(temp);
+                        }
+                    }
                 }
-                else if (firstClicked == clickedLabel)
+                if (canMove.Count() != 0 && firstClicked == null && player1Turn)
+                {
+                    if (canMove.Contains(clickedLabel))
+                    {
+                        firstClicked = clickedLabel;
+                        if (highlighting) highlightMovesRed(clickedLabel);
+                        firstClicked.BackColor = Color.GreenYellow;
+                        board[col, row].isOccupied = false;
+                        mustJump = true;
+                    }
+
+                }
+                else if (canMove.Count() != 0 && firstClicked == null && !player1Turn)
+                {
+                    if (canMove.Contains(clickedLabel))
+                    {
+                        firstClicked = clickedLabel;
+                        if (highlighting) highlightMovesGreen(clickedLabel);
+                        firstClicked.BackColor = Color.GreenYellow;
+                        board[col, row].isOccupied = false;
+                        mustJump = true;
+                    }
+
+                }
+                else if (firstClicked == clickedLabel && !secondJumpAvailable)
                 {
                     firstClicked.BackColor = backColor.BackColor;
                     board[col, row].isOccupied = true;
 
-                    if(highlighting)
+                    if (highlighting)
                         if (board[col, row].player1Checker == true)
                         {
                             unHighlightMovesRed(firstClicked);
@@ -88,32 +118,196 @@ namespace Checkers
 
                     firstClicked = null;
                     secondClicked = null;
-                
                 }
+                else if (mustJump && player1Turn)
+                {
+                    if (canJumpPlayer1(firstClicked, clickedLabel))
+                    {
+                        bool pieceMoved = false;
+
+                        if (player1Turn == true && player1CanMove(firstClicked, clickedLabel))
+                        {
+                            clickedLabel.Image = player1Checker;
+                            board[col, row].isOccupied = true;
+                            board[col, row].player1Checker = true;
+                            int col2 = this.tableLayoutPanel1.GetColumn(firstClicked);
+                            int row2 = this.tableLayoutPanel1.GetRow(firstClicked);
+                            board[col2, row2].isOccupied = false;
+                            board[col2, row2].player1Checker = false;
+                            if (highlighting) unHighlightMovesRed(firstClicked);
+                            if (pieceJumped && canJumpAgainPlayer1(clickedLabel))
+                            {
+                                firstClicked.Image = null;
+                                firstClicked.BackColor = backColor.BackColor;
+                                clickedLabel.BackColor = Color.GreenYellow;
+                                col2 = this.tableLayoutPanel1.GetColumn(firstClicked);
+                                row2 = this.tableLayoutPanel1.GetRow(firstClicked);
+                                board[col2, row2].isOccupied = false;
+                                board[col2, row2].player1Checker = false;
+                                board[col, row].isOccupied = false;
+                                board[col, row].player1Checker = false;
+
+                                firstClicked = clickedLabel;
+                                
+                            }
+                            else
+                            {
+                                player1Turn = false;
+                                pieceMoved = true;
+                            }
+                        }
+                        if (pieceMoved == true)
+                        {
+                            firstClicked.Image = null;
+
+                            firstClicked.BackColor = backColor.BackColor;
+
+                            firstClicked = null;
+                            secondClicked = null;
+                        }
+                        mustJump = false;
+                    }
+                }
+                else if (mustJump && !player1Turn)
+                {
+                    if (canJumpPlayer2(firstClicked, clickedLabel))
+                    {
+                        bool pieceMoved = false;
+
+                        if (player1Turn == false && player2CanMove(firstClicked, clickedLabel))
+                        {
+                            clickedLabel.Image = player2Checker;
+                            board[col, row].isOccupied = true;
+                            board[col, row].player1Checker = false;
+                            int col2 = this.tableLayoutPanel1.GetColumn(firstClicked);
+                            int row2 = this.tableLayoutPanel1.GetRow(firstClicked);
+                            board[col2, row2].isOccupied = false;
+                            board[col2, row2].player1Checker = false;
+                            if (highlighting) unHighlightMovesRed(firstClicked);
+                            if (pieceJumped && canJumpAgainPlayer2(clickedLabel))
+                            {
+                                firstClicked.Image = null;
+                                firstClicked.BackColor = backColor.BackColor;
+                                clickedLabel.BackColor = Color.GreenYellow;
+                                col2 = this.tableLayoutPanel1.GetColumn(firstClicked);
+                                row2 = this.tableLayoutPanel1.GetRow(firstClicked);
+                                board[col2, row2].isOccupied = false;
+                                board[col2, row2].player1Checker = false;
+                                board[col, row].isOccupied = false;
+                                board[col, row].player1Checker = false;
+
+                                firstClicked = clickedLabel;
+
+                            }
+                            else
+                            {
+                                player1Turn = true;
+                                pieceMoved = true;
+                            }
+                        }
+                        if (pieceMoved == true)
+                        {
+                            firstClicked.Image = null;
+
+                            firstClicked.BackColor = backColor.BackColor;
+
+                            firstClicked = null;
+                            secondClicked = null;
+                        }
+                        mustJump = false;
+                    }
+                }
+                // If fist clicked is null and current clicked isn't empty and isn't green
+                // set first clicked to this square and highlight this square using appropriate 
+                // checker(Red) on highlighted square
+                else if (firstClicked == null && board[col, row].isOccupied == true && board[col, row].player1Checker == true && player1Turn == true)
+                {
+                    firstClicked = clickedLabel;
+                    if (highlighting) highlightMovesRed(clickedLabel);
+                    firstClicked.BackColor = Color.GreenYellow;
+                    board[col, row].isOccupied = false;
+                }
+                // this is the same as the if loop, except it is for the condition of a green checker
+                // instead of a red checker. Then sets the first clicked square to a 
+                // green checker on a highlighted square
+                else if (firstClicked == null && board[col, row].isOccupied == true && board[col, row].player1Checker == false && player1Turn == false)
+                {
+                    firstClicked = clickedLabel;
+                    if (highlighting) highlightMovesGreen(clickedLabel);
+                    firstClicked.BackColor = Color.GreenYellow;
+                    board[col, row].isOccupied = false;
+                }
+                
                 // First clicked is NOT null, there for a checker to be moved has already been selected
                 // and it's location is highlighted, AND the destination square is empty(forecolor.black)
-                else if (firstClicked != null && board[col,row].isOccupied == false)
+                else if (firstClicked != null && board[col, row].isOccupied == false)
                 {
                     bool pieceMoved = false;
+                    pieceJumped = false;
                     secondClicked = clickedLabel;
+
 
                     if (player1Turn == true && player1CanMove(firstClicked, secondClicked))
                     {
                         secondClicked.Image = player1Checker;
                         board[col, row].isOccupied = true;
                         board[col, row].player1Checker = true;
+                        int col2 = this.tableLayoutPanel1.GetColumn(firstClicked);
+                        int row2 = this.tableLayoutPanel1.GetRow(firstClicked);
+                        board[col2, row2].isOccupied = false;
+                        board[col2, row2].player1Checker = false;
                         if (highlighting) unHighlightMovesRed(firstClicked);
-                        player1Turn = false;
-                        pieceMoved = true;
+                        if (pieceJumped && canJumpAgainPlayer1(secondClicked))
+                        {
+                            firstClicked.Image = null;
+                            firstClicked.BackColor = backColor.BackColor;
+                            secondClicked.BackColor = Color.GreenYellow;
+                            col2 = this.tableLayoutPanel1.GetColumn(firstClicked);
+                            row2 = this.tableLayoutPanel1.GetRow(firstClicked);
+                            board[col2, row2].isOccupied = false;
+                            board[col2, row2].player1Checker = false;
+                            board[col, row].isOccupied = false;
+                            board[col, row].player1Checker = false;
+
+                            firstClicked = secondClicked;
+                            secondClicked = null;
+                        }
+                        else
+                        {
+                            player1Turn = false;
+                            pieceMoved = true;
+                        }
                     }
-                    else if (player1Turn == false && player2CanMove(firstClicked, secondClicked))
+                    if (player1Turn == false && player2CanMove(firstClicked, secondClicked))
                     {
                         secondClicked.Image = player2Checker;
                         board[col, row].isOccupied = true;
                         board[col, row].player1Checker = false;
+                        int col2 = this.tableLayoutPanel1.GetColumn(firstClicked);
+                        int row2 = this.tableLayoutPanel1.GetRow(firstClicked);
+                        board[col2, row2].isOccupied = false;
+                        board[col2, row2].player1Checker = false;
                         if (highlighting) unHighlightMovesGreen(firstClicked);
-                        player1Turn = true;
-                        pieceMoved = true;
+                        if (pieceJumped && canJumpAgainPlayer2(secondClicked))
+                        {
+                            firstClicked.Image = null;
+                            firstClicked.BackColor = backColor.BackColor;
+                            secondClicked.BackColor = Color.GreenYellow;
+                            col2 = this.tableLayoutPanel1.GetColumn(firstClicked);
+                            row2 = this.tableLayoutPanel1.GetRow(firstClicked);
+                            board[col2, row2].isOccupied = false;
+                            board[col2, row2].player1Checker = false;
+                            board[col, row].isOccupied = false;
+                            board[col, row].player1Checker = false;
+
+                            firstClicked = secondClicked;
+                            secondClicked = null;
+                        }
+                        else
+                        {
+                            player1Turn = true;
+                            pieceMoved = true;
+                        }
                     }
                     // if a piece was moved rest first/second clicked for next move
                     // also reset fistClicked image and backcolor
@@ -127,9 +321,9 @@ namespace Checkers
                         secondClicked = null;
                     }
                     // if no move was made, reset second clicked to test next move
-                    else 
+                    else
                     {
-                        secondClicked = null; 
+                        secondClicked = null;
                     }
                     return;
                 }
