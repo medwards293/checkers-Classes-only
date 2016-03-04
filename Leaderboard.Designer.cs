@@ -198,25 +198,32 @@ namespace Checkers
                 loser = player1Name;
             }
 
-            //check if winner has a record
-            int pos = findRecord(winner);
-            //if not a new record is added else wins are incremented
-            if (pos == -1)
-            {
-                addNewRecord(winner, 1, 0);
-            } else
-                increment(pos,"wins");
 
-
-            //TO-DO check if there's a player
-            //if so do the same for loser
-            pos = findRecord(loser);
-            if (pos == -1)
+            if (winner != "computer")
             {
-                addNewRecord(loser,0,1);
+                //check if winner has a record
+                int pos = findRecord(winner);
+                //if not a new record is added else wins are incremented
+                if (pos == -1)
+                {
+                    addNewRecord(winner, 1, 0);
+                }
+                else
+                    increment(pos, "wins");
             }
-            else
-                increment(pos, "losses");
+
+
+            if (loser != "computer")
+            {
+                //if so do the same for loser
+                pos = findRecord(loser);
+                if (pos == -1)
+                {
+                    addNewRecord(loser, 0, 1);
+                }
+                else
+                    increment(pos, "losses");
+            }
 
         }
         //checks if player has a record and returns position in file else returns -1
