@@ -148,12 +148,36 @@ namespace Checkers
 
         public void setPlayer1Checker(System.Drawing.Bitmap checker1)
         {
+
             player1Checker = checker1;
+            
+            Label temp;
+            int i, j;
+            for (i = 0; i < 8; i++)
+                for (j = 0; j < 8; j++)
+                    if(board[i,j].isOccupied && board[i,j].player1Checker)
+                    {
+                        temp = (Label)tableLayoutPanel1.GetControlFromPosition(i,j);
+                        temp.Image = checker1;
+                    }
+                    
+
         }
 
         public void setPlayer2Checker(System.Drawing.Bitmap checker2)
         {
             player2Checker = checker2;
+
+            Label temp;
+            int i, j;
+            for (i = 0; i < 8; i++)
+                for (j = 0; j < 8; j++)
+                    if (board[i, j].isOccupied && !board[i, j].player1Checker)
+                    {
+                        temp = (Label)tableLayoutPanel1.GetControlFromPosition(i, j);
+                        temp.Image = checker2;
+                    }
+            
         }
         bool player2CanMove(Label from, Label to)
         {
