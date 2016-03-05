@@ -29,6 +29,7 @@ namespace Checkers
         // that the player clicks
         Label secondClicked = null;
 
+        
         private void label_Click(object sender, EventArgs e)
         {
 
@@ -54,6 +55,7 @@ namespace Checkers
                 // ForeColor.Red = Player 1
                 // ForeColor.Green = Player 2
                 // ForeColor.Black = empty square
+                
 
                 if (player1Turn)
                 {
@@ -79,7 +81,8 @@ namespace Checkers
                         }
                     }
                 }
-                if (canMove.Count() != 0 && firstClicked == null && player1Turn)
+
+                if (canMove.Count() != 0 && player1Turn && firstClicked == null)
                 {
                     if (canMove.Contains(clickedLabel))
                     {
@@ -89,9 +92,9 @@ namespace Checkers
                         board[col, row].isOccupied = false;
                         mustJump = true;
                     }
-
+                    
                 }
-                else if (canMove.Count() != 0 && firstClicked == null && !player1Turn)
+                else if (canMove.Count() != 0 && !player1Turn && firstClicked == null)
                 {
                     if (canMove.Contains(clickedLabel))
                     {
@@ -101,7 +104,6 @@ namespace Checkers
                         board[col, row].isOccupied = false;
                         mustJump = true;
                     }
-
                 }
                 else if (firstClicked == clickedLabel && !secondJumpAvailable)
                 {
@@ -127,27 +129,29 @@ namespace Checkers
 
                         if (player1Turn == true && player1CanMove(firstClicked, clickedLabel))
                         {
-                            clickedLabel.Image = player1Checker;
-                            board[col, row].isOccupied = true;
-                            board[col, row].player1Checker = true;
                             int col2 = this.tableLayoutPanel1.GetColumn(firstClicked);
                             int row2 = this.tableLayoutPanel1.GetRow(firstClicked);
+
+                            updateChecker(clickedLabel, firstClicked);
+
+                            board[col, row].isOccupied = true;
+                            board[col, row].player1Checker = true;
+                            if (board[col2, row2].pieceIsKing) board[col, row].pieceIsKing = true;
+                            else board[col, row].pieceIsKing = false;
+
                             board[col2, row2].isOccupied = false;
                             board[col2, row2].player1Checker = false;
+                            board[col2, row2].pieceIsKing = false;
+
                             if (highlighting) unHighlightMovesRed(firstClicked);
                             if (pieceJumped && canJumpAgainPlayer1(clickedLabel))
                             {
                                 firstClicked.Image = null;
                                 firstClicked.BackColor = backColor.BackColor;
                                 clickedLabel.BackColor = Color.GreenYellow;
-                                col2 = this.tableLayoutPanel1.GetColumn(firstClicked);
-                                row2 = this.tableLayoutPanel1.GetRow(firstClicked);
-                                board[col2, row2].isOccupied = false;
-                                board[col2, row2].player1Checker = false;
-                                board[col, row].isOccupied = false;
-                                board[col, row].player1Checker = false;
-
+                               
                                 firstClicked = clickedLabel;
+                                secondClicked = null;
                                 
                             }
                             else
@@ -176,28 +180,28 @@ namespace Checkers
 
                         if (player1Turn == false && player2CanMove(firstClicked, clickedLabel))
                         {
-                            clickedLabel.Image = player2Checker;
-                            board[col, row].isOccupied = true;
-                            board[col, row].player1Checker = false;
                             int col2 = this.tableLayoutPanel1.GetColumn(firstClicked);
                             int row2 = this.tableLayoutPanel1.GetRow(firstClicked);
+
+                            updateChecker(clickedLabel, firstClicked);
+                            board[col, row].isOccupied = true;
+                            board[col, row].player1Checker = false;
+                            if(board[col2,row2].pieceIsKing) board[col,row].pieceIsKing = true;
+                            else board[col, row].pieceIsKing = false;
+
                             board[col2, row2].isOccupied = false;
                             board[col2, row2].player1Checker = false;
+                            board[col2, row2].pieceIsKing = false;
+
                             if (highlighting) unHighlightMovesRed(firstClicked);
                             if (pieceJumped && canJumpAgainPlayer2(clickedLabel))
                             {
                                 firstClicked.Image = null;
                                 firstClicked.BackColor = backColor.BackColor;
                                 clickedLabel.BackColor = Color.GreenYellow;
-                                col2 = this.tableLayoutPanel1.GetColumn(firstClicked);
-                                row2 = this.tableLayoutPanel1.GetRow(firstClicked);
-                                board[col2, row2].isOccupied = false;
-                                board[col2, row2].player1Checker = false;
-                                board[col, row].isOccupied = false;
-                                board[col, row].player1Checker = false;
 
                                 firstClicked = clickedLabel;
-
+                                secondClicked = null;
                             }
                             else
                             {
@@ -249,27 +253,26 @@ namespace Checkers
 
                     if (player1Turn == true && player1CanMove(firstClicked, secondClicked))
                     {
-                        secondClicked.Image = player1Checker;
-                        board[col, row].isOccupied = true;
-                        board[col, row].player1Checker = true;
                         int col2 = this.tableLayoutPanel1.GetColumn(firstClicked);
                         int row2 = this.tableLayoutPanel1.GetRow(firstClicked);
+
+                        updateChecker(clickedLabel, firstClicked);
+                        board[col, row].isOccupied = true;
+                        board[col, row].player1Checker = true;
+                        if(board[col2,row2].pieceIsKing ) board[col, row].pieceIsKing = true;
+                        
                         board[col2, row2].isOccupied = false;
                         board[col2, row2].player1Checker = false;
+                        board[col2, row2].pieceIsKing = false;
+
                         if (highlighting) unHighlightMovesRed(firstClicked);
                         if (pieceJumped && canJumpAgainPlayer1(secondClicked))
                         {
                             firstClicked.Image = null;
                             firstClicked.BackColor = backColor.BackColor;
-                            secondClicked.BackColor = Color.GreenYellow;
-                            col2 = this.tableLayoutPanel1.GetColumn(firstClicked);
-                            row2 = this.tableLayoutPanel1.GetRow(firstClicked);
-                            board[col2, row2].isOccupied = false;
-                            board[col2, row2].player1Checker = false;
-                            board[col, row].isOccupied = false;
-                            board[col, row].player1Checker = false;
+                            clickedLabel.BackColor = Color.GreenYellow;
 
-                            firstClicked = secondClicked;
+                            firstClicked = clickedLabel;
                             secondClicked = null;
                         }
                         else
@@ -280,27 +283,26 @@ namespace Checkers
                     }
                     if (player1Turn == false && player2CanMove(firstClicked, secondClicked))
                     {
-                        secondClicked.Image = player2Checker;
-                        board[col, row].isOccupied = true;
-                        board[col, row].player1Checker = false;
                         int col2 = this.tableLayoutPanel1.GetColumn(firstClicked);
                         int row2 = this.tableLayoutPanel1.GetRow(firstClicked);
+
+                        updateChecker(clickedLabel, firstClicked);
+                        board[col, row].isOccupied = true;
+                        board[col, row].player1Checker = false;
+                        if (board[col2, row2].pieceIsKing) board[col, row].pieceIsKing = true;
+                        
                         board[col2, row2].isOccupied = false;
                         board[col2, row2].player1Checker = false;
+                        board[col2, row2].pieceIsKing = false;
+
                         if (highlighting) unHighlightMovesGreen(firstClicked);
                         if (pieceJumped && canJumpAgainPlayer2(secondClicked))
                         {
                             firstClicked.Image = null;
                             firstClicked.BackColor = backColor.BackColor;
-                            secondClicked.BackColor = Color.GreenYellow;
-                            col2 = this.tableLayoutPanel1.GetColumn(firstClicked);
-                            row2 = this.tableLayoutPanel1.GetRow(firstClicked);
-                            board[col2, row2].isOccupied = false;
-                            board[col2, row2].player1Checker = false;
-                            board[col, row].isOccupied = false;
-                            board[col, row].player1Checker = false;
+                            clickedLabel.BackColor = Color.GreenYellow;
 
-                            firstClicked = secondClicked;
+                            firstClicked = clickedLabel;
                             secondClicked = null;
                         }
                         else
@@ -325,9 +327,27 @@ namespace Checkers
                     {
                         secondClicked = null;
                     }
-                    return;
+                    
+                }
+
+                for (int i = 1; i <= 7; i += 2)
+                {
+                    if (board[i, 0].isOccupied && board[i, 0].player1Checker)
+                    {
+                        kingPiece("player1", i, 0);
+                    }
+                }
+                
+                for (int i = 0; i <= 7; i += 2)
+                {
+                    if (board[i, 7].isOccupied && !board[i, 7].player1Checker)
+                    {
+                        kingPiece("player2", i, 7);
+                    }
                 }
             }
+
+            
         }
     }
 }
