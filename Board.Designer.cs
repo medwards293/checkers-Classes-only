@@ -33,8 +33,52 @@ namespace Checkers
         System.Drawing.Bitmap player1Checker = Checkers.Properties.Resources.checkerRed;
         System.Drawing.Bitmap player2Checker = Checkers.Properties.Resources.checkerGreen;
 
+
+
+
+        System.Drawing.Bitmap player1KingChecker = Checkers.Properties.Resources.checkerRedKing;
+        System.Drawing.Bitmap player2KingChecker = Checkers.Properties.Resources.checkerGreenKing;
+
         checkerBoard[,] board = new checkerBoard[8,8];
 
+
+        void kingPiece(string player, int col, int row)
+        {
+            if (player == "player1")
+            {
+                ((Label)this.tableLayoutPanel1.GetControlFromPosition(col, row)).Image = player1KingChecker;
+                board[col, row].pieceIsKing = true;
+            }
+            else
+            {
+                ((Label)this.tableLayoutPanel1.GetControlFromPosition(col, row)).Image = player2KingChecker;
+                board[col, row].pieceIsKing = true;
+            }
+        
+        }
+
+        void updateChecker(Label clickedLabel, Label firstClicked)
+        {
+
+            int fromRow = this.tableLayoutPanel1.GetRow(firstClicked);
+            int fromCol = this.tableLayoutPanel1.GetColumn(firstClicked);
+
+            if (board[fromCol, fromRow].player1Checker)
+            {
+                if (board[fromCol, fromRow].pieceIsKing)
+                    clickedLabel.Image = player1KingChecker;
+                else
+                    clickedLabel.Image = player1Checker;
+            }
+
+            if (!board[fromCol, fromRow].player1Checker)
+            {
+                if (board[fromCol, fromRow].pieceIsKing)
+                    clickedLabel.Image = player2KingChecker;
+                else
+                    clickedLabel.Image = player2Checker;
+            }
+        }
         bool canJumpPlayer1(Label from, Label to)
         {
             bool jumpAvailable = false;
@@ -44,7 +88,7 @@ namespace Checkers
             int toCol = this.tableLayoutPanel1.GetColumn(to);
             int toRow = this.tableLayoutPanel1.GetRow(to);
 
-            if (board[fromCol, fromRow].pieceIsKing == false && toRow >= 0 && toCol >= 0 && toCol <= 7)
+            if (toRow >= 0 && toCol >= 0 && toCol <= 7)
             {
 
                 if (!board[toCol, toRow].isOccupied && fromRow - 2 == toRow)
@@ -52,6 +96,16 @@ namespace Checkers
                     jumpAvailable = true;                    
                 }
                 
+            }
+
+            if (board[fromCol, fromRow].pieceIsKing == true && toRow <= 7 && toCol >= 0 && toCol <= 7)
+            {
+
+                if (!board[toCol, toRow].isOccupied && fromRow + 2 == toRow)
+                {
+                    jumpAvailable = true;
+                }
+
             }
 
             return jumpAvailable;
@@ -66,7 +120,7 @@ namespace Checkers
             int toCol = this.tableLayoutPanel1.GetColumn(to);
             int toRow = this.tableLayoutPanel1.GetRow(to);
 
-            if (board[fromCol, fromRow].pieceIsKing == false && toRow >= 0 && toCol >= 0 && toCol <= 7)
+            if (toRow <= 7 && toCol >= 0 && toCol <= 7)
             {
 
                 if (!board[toCol, toRow].isOccupied && fromRow + 2 == toRow)
@@ -75,7 +129,15 @@ namespace Checkers
                 }
 
             }
+            if (board[fromCol,fromRow].pieceIsKing && toRow >= 0 && toCol >= 0 && toCol <= 7)
+            {
 
+                if (!board[toCol, toRow].isOccupied && fromRow - 2 == toRow)
+                {
+                    jumpAvailable = true;
+                }
+
+            }
             return jumpAvailable;
         }
         bool canJumpAgainPlayer1(Label clicked)
@@ -87,10 +149,14 @@ namespace Checkers
             int toLeftCol = fromCol - 1;
             int toRightCol = fromCol + 1;
             int toRow = fromRow - 1;
+            int toRowKing = fromRow + 1;
 
-            
+            if (fromRow == 0 && board[fromCol,fromRow].player1Checker)
+            {
+                board[fromCol, fromRow].pieceIsKing = true;
+            }
 
-            if (board[fromCol, fromRow].pieceIsKing == false && toRow >= 0 && fromCol >= 0 && fromCol <= 7)
+            if (toRow >= 0 && fromCol >= 0 && fromCol <= 7)
             {
 
                 if (toRow >= 0 && toLeftCol >= 0 && board[toLeftCol, toRow].isOccupied && board[toLeftCol, toRow].player1Checker == false)
@@ -109,6 +175,25 @@ namespace Checkers
                 }
             }
 
+            if (board[fromCol, fromRow].pieceIsKing == true && toRowKing <= 7 && fromCol >= 0 && fromCol <= 7)
+            {
+
+                if (toRowKing <= 7 && toLeftCol >= 0 && board[toLeftCol, toRowKing].isOccupied && board[toLeftCol, toRowKing].player1Checker == false)
+                {
+                    if (toRowKing >= 1 && toLeftCol >= 1 && board[toLeftCol - 1, toRowKing + 1].isOccupied == false)
+                    {
+                        secondJumpAvailable = true;
+                    }
+                }
+                if (toRowKing <= 7 && toRightCol <= 7 && board[toRightCol, toRowKing].isOccupied && board[toRightCol, toRowKing].player1Checker == false)
+                {
+                    if (toRowKing >= 1 && toRightCol <= 6 && board[toRightCol + 1, toRowKing + 1].isOccupied == false)
+                    {
+                        secondJumpAvailable = true;
+                    }
+                }
+            }
+
             return secondJumpAvailable;
         }
 
@@ -121,10 +206,14 @@ namespace Checkers
             int toLeftCol = fromCol - 1;
             int toRightCol = fromCol + 1;
             int toRow = fromRow + 1;
+            int toRowKing = fromRow - 1;
 
+            if (fromRow == 7 && !board[fromCol,fromRow].player1Checker)
+            {
+                board[fromCol, fromRow].pieceIsKing = true;
+            }
 
-
-            if (board[fromCol, fromRow].pieceIsKing == false && toRow >= 0 && fromCol >= 0 && fromCol <= 7)
+            if (toRow >= 0 && fromCol >= 0 && fromCol <= 7)
             {
 
                 if (toRow <= 7 && toLeftCol >= 0 && board[toLeftCol, toRow].isOccupied && board[toLeftCol, toRow].player1Checker == true)
@@ -142,80 +231,71 @@ namespace Checkers
                     }
                 }
             }
+            if (board[fromCol,fromRow].pieceIsKing && toRowKing >= 0 && fromCol >= 0 && fromCol <= 7)
+            {
 
+                if (toRowKing >= 0 && toLeftCol >= 0 && board[toLeftCol, toRowKing].isOccupied && board[toLeftCol, toRowKing].player1Checker == true)
+                {
+                    if (toRowKing >= 1 && toLeftCol >= 1 && board[toLeftCol - 1, toRowKing - 1].isOccupied == false)
+                    {
+                        secondJumpAvailable = true;
+                    }
+                }
+                if (toRowKing >= 0 && toRightCol <= 7 && board[toRightCol, toRowKing].isOccupied && board[toRightCol, toRowKing].player1Checker == true)
+                {
+                    if (toRowKing >= 1 && toRightCol <= 6 && board[toRightCol + 1, toRowKing - 1].isOccupied == false)
+                    {
+                        secondJumpAvailable = true;
+                    }
+                }
+            }
             return secondJumpAvailable;
         }
 
-        public void setPlayer1Checker(System.Drawing.Bitmap checker1)
+        public void setPlayer1Checker(System.Drawing.Bitmap checker1, System.Drawing.Bitmap checker1King)
         {
-
             player1Checker = checker1;
-            
+            player1KingChecker = checker1King;
+        
             Label temp;
             int i, j;
             for (i = 0; i < 8; i++)
                 for (j = 0; j < 8; j++)
-                    if(board[i,j].isOccupied && board[i,j].player1Checker)
+                    if(board[i,j].isOccupied && board[i,j].player1Checker && !board[i,j].pieceIsKing)
                     {
                         temp = (Label)tableLayoutPanel1.GetControlFromPosition(i,j);
                         temp.Image = checker1;
+                    }
+                    else if (board[i, j].isOccupied && board[i, j].player1Checker && board[i, j].pieceIsKing)
+                    {
+                        temp = (Label)tableLayoutPanel1.GetControlFromPosition(i, j);
+                        temp.Image = checker1King;
                     }
                     
 
         }
 
-        public void setPlayer2Checker(System.Drawing.Bitmap checker2)
+        public void setPlayer2Checker(System.Drawing.Bitmap checker2, System.Drawing.Bitmap checker2King)
         {
             player2Checker = checker2;
-
+            player2KingChecker = checker2King;
             Label temp;
             int i, j;
             for (i = 0; i < 8; i++)
                 for (j = 0; j < 8; j++)
-                    if (board[i, j].isOccupied && !board[i, j].player1Checker)
+                    if (board[i, j].isOccupied && !board[i, j].player1Checker && !board[i,j].pieceIsKing)
                     {
                         temp = (Label)tableLayoutPanel1.GetControlFromPosition(i, j);
                         temp.Image = checker2;
                     }
+                    else if (board[i, j].isOccupied && !board[i, j].player1Checker && board[i, j].pieceIsKing)
+                    {
+                        temp = (Label)tableLayoutPanel1.GetControlFromPosition(i, j);
+                        temp.Image = checker2King;
+                    }
             
         }
-        bool player2CanMove(Label from, Label to)
-        {
-            bool canMove = false;
-
-            int fromCol = this.tableLayoutPanel1.GetColumn(from);
-            int fromRow = this.tableLayoutPanel1.GetRow(from);
-
-            int toCol = this.tableLayoutPanel1.GetColumn(to);
-            int toRow = this.tableLayoutPanel1.GetRow(to);
-
-            if (board[fromCol, fromRow].pieceIsKing == false)
-            {
-
-                if (toCol >= 0 && toCol <= 7 && board[toCol, toRow].isOccupied == false)
-                    if ((fromCol - 1 == toCol || fromCol + 1 == toCol) && fromRow + 1 == toRow)
-                    {
-                        canMove = true;
-                    }
-                    else if ((fromCol - 2 == toCol || fromCol + 2 == toCol) && fromRow + 2 == toRow)
-                        if (toCol == fromCol - 2)
-                        {
-                            if (board[fromCol - 1, fromRow + 1].player1Checker == true && board[fromCol - 1, fromRow + 1].isOccupied == true)
-                            {
-                                jumpPiece(fromCol - 1, fromRow + 1);
-                                canMove = true;
-                            }
-                        }
-                        else if (toCol == fromCol + 2)
-                            if (board[fromCol + 1, fromRow + 1].player1Checker == true && board[fromCol + 1, fromRow + 1].isOccupied == true)
-                            {
-                                jumpPiece(fromCol + 1, fromRow + 1);
-                                canMove = true;
-                            }
-
-            }
-            return canMove;
-        }
+        
         bool player1CanMove(Label from, Label to)
         {
             bool canMove = false;
@@ -226,30 +306,110 @@ namespace Checkers
             int toCol = this.tableLayoutPanel1.GetColumn(to);
             int toRow = this.tableLayoutPanel1.GetRow(to);
 
-            if (board[fromCol, fromRow].pieceIsKing == false)
+            if (toCol >= 0 && toCol <= 7 && board[toCol, toRow].isOccupied == false)
+            {
+                if ((fromCol - 1 == toCol || fromCol + 1 == toCol) && fromRow - 1 == toRow)
+                {
+                    canMove = true;
+                }
+                else if ((fromCol - 2 == toCol || fromCol + 2 == toCol) && fromRow - 2 == toRow)
+                    if (toCol == fromCol - 2)
+                    {
+                        if (board[fromCol - 1, fromRow - 1].player1Checker == false && board[fromCol - 1, fromRow - 1].isOccupied == true)
+                        {
+                            jumpPiece(fromCol - 1, fromRow - 1);
+                            canMove = true;
+                        }
+                    }
+                    else if (toCol == fromCol + 2)
+                        if (board[fromCol + 1, fromRow - 1].player1Checker == false && board[fromCol + 1, fromRow - 1].isOccupied == true)
+                        {
+                            jumpPiece(fromCol + 1, fromRow - 1);
+                            canMove = true;
+                        }
+            }
+            if (board[fromCol, fromRow].pieceIsKing == true)
             {
 
                 if (toCol >= 0 && toCol <= 7 && board[toCol, toRow].isOccupied == false)
-                    if((fromCol - 1 == toCol || fromCol + 1 == toCol ) && fromRow -1 == toRow)
+                    if ((fromCol - 1 == toCol || fromCol + 1 == toCol) && fromRow + 1 == toRow)
                     {
                         canMove = true;
                     }
-                    else if ((fromCol -2 == toCol || fromCol + 2 == toCol) && fromRow -2 == toRow)
+                    else if ((fromCol - 2 == toCol || fromCol + 2 == toCol) && fromRow + 2 == toRow)
                         if (toCol == fromCol - 2)
                         {
-                            if (board[fromCol - 1, fromRow - 1].player1Checker == false && board[fromCol - 1, fromRow - 1].isOccupied == true)
+                            if (board[fromCol - 1, fromRow + 1].player1Checker == false && board[fromCol - 1, fromRow + 1].isOccupied == true)
+                            {
+                                jumpPiece(fromCol - 1, fromRow + 1);
+                                canMove = true;
+                            }
+                        }
+                        else if (toCol == fromCol + 2)
+                            if (board[fromCol + 1, fromRow + 1].player1Checker == false && board[fromCol + 1, fromRow + 1].isOccupied == true)
+                            {
+                                jumpPiece(fromCol + 1, fromRow + 1);
+                                canMove = true;
+                            }
+
+            }
+            return canMove;
+        }
+
+        bool player2CanMove(Label from, Label to)
+        {
+            bool canMove = false;
+
+            int fromCol = this.tableLayoutPanel1.GetColumn(from);
+            int fromRow = this.tableLayoutPanel1.GetRow(from);
+
+            int toCol = this.tableLayoutPanel1.GetColumn(to);
+            int toRow = this.tableLayoutPanel1.GetRow(to);
+
+            if (toCol >= 0 && toCol <= 7 && board[toCol, toRow].isOccupied == false)
+            {
+                if ((fromCol - 1 == toCol || fromCol + 1 == toCol) && fromRow + 1 == toRow)
+                {
+                    canMove = true;
+                }
+                else if ((fromCol - 2 == toCol || fromCol + 2 == toCol) && fromRow + 2 == toRow)
+                    if (toCol == fromCol - 2)
+                    {
+                        if (board[fromCol - 1, fromRow + 1].player1Checker == true && board[fromCol - 1, fromRow + 1].isOccupied == true)
+                        {
+                            jumpPiece(fromCol - 1, fromRow + 1);
+                            canMove = true;
+                        }
+                    }
+                    else if (toCol == fromCol + 2)
+                        if (board[fromCol + 1, fromRow + 1].player1Checker == true && board[fromCol + 1, fromRow + 1].isOccupied == true)
+                        {
+                            jumpPiece(fromCol + 1, fromRow + 1);
+                            canMove = true;
+                        }
+            }
+            if (board[fromCol, fromRow].pieceIsKing == true)
+            {
+                if (toCol >= 0 && toCol <= 7 && board[toCol, toRow].isOccupied == false)
+                    if ((fromCol - 1 == toCol || fromCol + 1 == toCol) && fromRow - 1 == toRow)
+                    {
+                        canMove = true;
+                    }
+                    else if ((fromCol - 2 == toCol || fromCol + 2 == toCol) && fromRow - 2 == toRow)
+                        if (toCol == fromCol - 2)
+                        {
+                            if (board[fromCol - 1, fromRow - 1].player1Checker == true && board[fromCol - 1, fromRow - 1].isOccupied == true)
                             {
                                 jumpPiece(fromCol - 1, fromRow - 1);
                                 canMove = true;
                             }
                         }
                         else if (toCol == fromCol + 2)
-                            if (board[fromCol + 1, fromRow - 1].player1Checker == false && board[fromCol + 1, fromRow - 1].isOccupied == true)
+                            if (board[fromCol + 1, fromRow - 1].player1Checker == true && board[fromCol + 1, fromRow - 1].isOccupied == true)
                             {
                                 jumpPiece(fromCol + 1, fromRow - 1);
                                 canMove = true;
                             }
-                
             }
             return canMove;
         }
@@ -270,7 +430,7 @@ namespace Checkers
 
             if (checker2Count == 0)
                 Form1.getLeaderboardName().winnerDeclared(1);
-            else if(checker1Count == 1)
+            else if(checker1Count == 0)
                 Form1.getLeaderboardName().winnerDeclared(2);
 
         }
@@ -914,7 +1074,7 @@ namespace Checkers
             this.label21.BackColor = System.Drawing.Color.Black;
             this.label21.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label21.ForeColor = System.Drawing.Color.Black;
-            this.label21.Image = global::Checkers.Properties.Resources.checkerRed;
+            this.label21.Image = player1Checker;
             this.label21.Location = new System.Drawing.Point(2, 287);
             this.label21.Margin = new System.Windows.Forms.Padding(0);
             this.label21.Name = "label21";
@@ -929,7 +1089,7 @@ namespace Checkers
             this.label22.BackColor = System.Drawing.Color.Black;
             this.label22.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label22.ForeColor = System.Drawing.Color.Black;
-            this.label22.Image = global::Checkers.Properties.Resources.checkerRed;
+            this.label22.Image = player1Checker;
             this.label22.Location = new System.Drawing.Point(122, 287);
             this.label22.Margin = new System.Windows.Forms.Padding(0);
             this.label22.Name = "label22";
@@ -944,7 +1104,7 @@ namespace Checkers
             this.label23.BackColor = System.Drawing.Color.Black;
             this.label23.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label23.ForeColor = System.Drawing.Color.Black;
-            this.label23.Image = global::Checkers.Properties.Resources.checkerRed;
+            this.label23.Image = player1Checker;
             this.label23.Location = new System.Drawing.Point(242, 287);
             this.label23.Margin = new System.Windows.Forms.Padding(0);
             this.label23.Name = "label23";
@@ -959,7 +1119,7 @@ namespace Checkers
             this.label24.BackColor = System.Drawing.Color.Black;
             this.label24.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label24.ForeColor = System.Drawing.Color.Black;
-            this.label24.Image = global::Checkers.Properties.Resources.checkerRed;
+            this.label24.Image = player1Checker;
             this.label24.Location = new System.Drawing.Point(362, 287);
             this.label24.Margin = new System.Windows.Forms.Padding(0);
             this.label24.Name = "label24";
@@ -974,7 +1134,7 @@ namespace Checkers
             this.label25.BackColor = System.Drawing.Color.Black;
             this.label25.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label25.ForeColor = System.Drawing.Color.Black;
-            this.label25.Image = global::Checkers.Properties.Resources.checkerRed;
+            this.label25.Image = player1Checker;
             this.label25.Location = new System.Drawing.Point(62, 344);
             this.label25.Margin = new System.Windows.Forms.Padding(0);
             this.label25.Name = "label25";
@@ -989,7 +1149,7 @@ namespace Checkers
             this.label26.BackColor = System.Drawing.Color.Black;
             this.label26.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label26.ForeColor = System.Drawing.Color.Black;
-            this.label26.Image = global::Checkers.Properties.Resources.checkerRed;
+            this.label26.Image = player1Checker;
             this.label26.Location = new System.Drawing.Point(182, 344);
             this.label26.Margin = new System.Windows.Forms.Padding(0);
             this.label26.Name = "label26";
@@ -1004,7 +1164,7 @@ namespace Checkers
             this.label27.BackColor = System.Drawing.Color.Black;
             this.label27.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label27.ForeColor = System.Drawing.Color.Black;
-            this.label27.Image = global::Checkers.Properties.Resources.checkerRed;
+            this.label27.Image = player1Checker;
             this.label27.Location = new System.Drawing.Point(302, 344);
             this.label27.Margin = new System.Windows.Forms.Padding(0);
             this.label27.Name = "label27";
@@ -1019,7 +1179,7 @@ namespace Checkers
             this.label28.BackColor = System.Drawing.Color.Black;
             this.label28.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label28.ForeColor = System.Drawing.Color.Black;
-            this.label28.Image = global::Checkers.Properties.Resources.checkerRed;
+            this.label28.Image = player1Checker;
             this.label28.Location = new System.Drawing.Point(422, 344);
             this.label28.Margin = new System.Windows.Forms.Padding(0);
             this.label28.Name = "label28";
@@ -1034,7 +1194,7 @@ namespace Checkers
             this.label29.BackColor = System.Drawing.Color.Black;
             this.label29.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label29.ForeColor = System.Drawing.Color.Black;
-            this.label29.Image = global::Checkers.Properties.Resources.checkerRed;
+            this.label29.Image = player1Checker;
             this.label29.Location = new System.Drawing.Point(2, 401);
             this.label29.Margin = new System.Windows.Forms.Padding(0);
             this.label29.Name = "label29";
@@ -1049,7 +1209,7 @@ namespace Checkers
             this.label30.BackColor = System.Drawing.Color.Black;
             this.label30.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label30.ForeColor = System.Drawing.Color.Black;
-            this.label30.Image = global::Checkers.Properties.Resources.checkerRed;
+            this.label30.Image = player1Checker;
             this.label30.Location = new System.Drawing.Point(122, 401);
             this.label30.Margin = new System.Windows.Forms.Padding(0);
             this.label30.Name = "label30";
@@ -1064,7 +1224,7 @@ namespace Checkers
             this.label31.BackColor = System.Drawing.Color.Black;
             this.label31.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label31.ForeColor = System.Drawing.Color.Black;
-            this.label31.Image = global::Checkers.Properties.Resources.checkerRed;
+            this.label31.Image = player1Checker;
             this.label31.Location = new System.Drawing.Point(242, 401);
             this.label31.Margin = new System.Windows.Forms.Padding(0);
             this.label31.Name = "label31";
@@ -1079,7 +1239,7 @@ namespace Checkers
             this.label32.BackColor = System.Drawing.Color.Black;
             this.label32.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label32.ForeColor = System.Drawing.Color.Black;
-            this.label32.Image = global::Checkers.Properties.Resources.checkerRed;
+            this.label32.Image = player1Checker;
             this.label32.Location = new System.Drawing.Point(362, 401);
             this.label32.Margin = new System.Windows.Forms.Padding(0);
             this.label32.Name = "label32";
