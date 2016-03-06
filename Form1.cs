@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -19,6 +19,8 @@ namespace Checkers
         
         private void button1_Click(object sender, EventArgs e)
         {
+            if(boardWindow.IsDisposed)
+                boardWindow = new Board();
             newGameWindow.Show();
         }
 
