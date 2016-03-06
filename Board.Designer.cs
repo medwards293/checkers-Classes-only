@@ -32,8 +32,10 @@ namespace Checkers
         int checker1Count = 12;
         int checker2Count = 12;
         bool secondJumpAvailable = false;
+        bool consecutiveJumpAvailable = false;
         bool pieceJumped = false;
         bool mustJump = false;
+        bool opponentIsAI = true;
 
         System.Drawing.Bitmap player1Checker = Checkers.Properties.Resources.checkerRed;
         System.Drawing.Bitmap player2Checker = Checkers.Properties.Resources.checkerGreen;
@@ -447,9 +449,15 @@ namespace Checkers
                 checker1Count--;
 
             if (checker2Count == 0)
+            {
                 Form1.getLeaderboardName().updateScores(1);
-            else if(checker1Count == 0)
+                MessageBox.Show("Player 1 Won!");
+            }
+            else if (checker1Count == 0)
+            {
                 Form1.getLeaderboardName().updateScores(2);
+                MessageBox.Show("Player 2 Won!");
+            }
 
         }
 
