@@ -17,8 +17,9 @@ namespace Checkers
             InitializeComponent();
             initializeCheckerBoard();
             backColor = label33;
+            opponentIsAI = (Form1.getNewGameWindowName()).getOpponentIsAI();
         }
-
+        
 
         // firstClicked points to the first Label control 
         // that the player clicks, but it will be null 
@@ -32,6 +33,8 @@ namespace Checkers
         
         private void label_Click(object sender, EventArgs e)
         {
+
+
 
             Label clickedLabel = sender as Label;
 
@@ -100,7 +103,7 @@ namespace Checkers
                 }
                 // allows to deselect a piece as long as there isn't a second jump available
                 // all jumps must be taken that can be
-                else if (firstClicked == clickedLabel && !secondJumpAvailable)
+                else if (firstClicked == clickedLabel && !consecutiveJumpAvailable)
                 {
                     firstClicked.BackColor = backColor.BackColor;
                     board[col, row].isOccupied = true;
@@ -155,7 +158,7 @@ namespace Checkers
                                 firstClicked.Image = null;
                                 firstClicked.BackColor = backColor.BackColor;
                                 clickedLabel.BackColor = Color.GreenYellow;
-                               
+                                consecutiveJumpAvailable = true;
                                 firstClicked = clickedLabel;
                                 secondClicked = null;
                                 
@@ -163,6 +166,7 @@ namespace Checkers
                             else
                             {
                                 player1Turn = false;
+                                consecutiveJumpAvailable = false;
                                 pieceMoved = true;
                             }
                         }
@@ -215,7 +219,7 @@ namespace Checkers
                                 firstClicked.Image = null;
                                 firstClicked.BackColor = backColor.BackColor;
                                 clickedLabel.BackColor = Color.GreenYellow;
-
+                                consecutiveJumpAvailable = true;
                                 firstClicked = clickedLabel;
                                 secondClicked = null;
                             }
@@ -223,6 +227,7 @@ namespace Checkers
                             {
                                 player1Turn = true;
                                 pieceMoved = true;
+                                consecutiveJumpAvailable = false;
                             }
                         }
                         if (pieceMoved == true)
@@ -292,13 +297,14 @@ namespace Checkers
                             firstClicked.Image = null;
                             firstClicked.BackColor = backColor.BackColor;
                             clickedLabel.BackColor = Color.GreenYellow;
-
+                            consecutiveJumpAvailable = true;
                             firstClicked = clickedLabel;
                             secondClicked = null;
                         }
                         else
                         {
                             player1Turn = false;
+                            consecutiveJumpAvailable = false;
                             pieceMoved = true;
                         }
                     }
@@ -328,7 +334,7 @@ namespace Checkers
                             firstClicked.Image = null;
                             firstClicked.BackColor = backColor.BackColor;
                             clickedLabel.BackColor = Color.GreenYellow;
-
+                            consecutiveJumpAvailable = true;
                             firstClicked = clickedLabel;
                             secondClicked = null;
                         }
@@ -336,6 +342,7 @@ namespace Checkers
                         {
                             player1Turn = true;
                             pieceMoved = true;
+                            consecutiveJumpAvailable = false;
                         }
                     }
                     // if a piece was moved rest first/second clicked for next move
