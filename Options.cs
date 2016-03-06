@@ -185,29 +185,48 @@ namespace Checkers
         //When user clicks Apply button, their setting will be saved and the Options form will close.
         private void button1_Click(object sender, EventArgs e)
         {
-            //If they dont select a color for either fore or back ground, close form
-            if (newBackColor == null && newForeColor == null)
+            if (String.Compare(newBackColor, newForeColor) == 0)
             {
-                this.Hide();
+                MessageBox.Show("The Background and Foreground cannot not be the same color.");
             }
-            //if they dont choose a background color, change foreground and close form
-            else if (newBackColor == null)
+            else if (String.Compare(newForeColor, newPlayer1Checker) == 0)
             {
-                Form1.getBoardName().setForeColor(newForeColor);
-                this.Hide();
+                MessageBox.Show("The Foreground and the checker pieces cannot not be the same color.");
             }
-            //if they dont choose a foreground color, change background and close form
-            else if (newForeColor == null)
+            else if (String.Compare(newForeColor, newPlayer2Checker) == 0)
             {
-                Form1.getBoardName().setBackColor(newBackColor);
-                this.Hide();
+                MessageBox.Show("The Foreground and the checker pieces cannot not be the same color.");
             }
-            //change both background and foreground colors and close form
+            else if (String.Compare(newPlayer1Checker, newPlayer2Checker) == 0)
+            {
+                MessageBox.Show("Each player's checker pieces cannot not be the same color.");
+            }
             else
             {
-                Form1.getBoardName().setBackColor(newBackColor);
-                Form1.getBoardName().setForeColor(newForeColor);
-                this.Hide();
+                //If they dont select a color for either fore or back ground, close form
+                if (newBackColor == null && newForeColor == null)
+                {
+                    this.Hide();
+                }
+                //if they dont choose a background color, change foreground and close form
+                else if (newBackColor == null)
+                {
+                    Form1.getBoardName().setForeColor(newForeColor);
+                    this.Hide();
+                }
+                //if they dont choose a foreground color, change background and close form
+                else if (newForeColor == null)
+                {
+                    Form1.getBoardName().setBackColor(newBackColor);
+                    this.Hide();
+                }
+                //change both background and foreground colors and close form
+                else
+                {
+                    Form1.getBoardName().setBackColor(newBackColor);
+                    Form1.getBoardName().setForeColor(newForeColor);
+                    this.Hide();
+                }
             }
         }
         //Player 1 piece color
