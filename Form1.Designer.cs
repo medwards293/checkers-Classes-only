@@ -1,4 +1,4 @@
-﻿namespace Checkers
+namespace Checkers
 {
     partial class Form1
     {
@@ -22,11 +22,12 @@
 
         public string backColor;
 
-        public static Board boardWindow;
+        
         public static NewGame newGameWindow;
         public static Options optionsWindow;
         public static Leaderboard leaderboardWindow;
         public static Help helpWindow;
+        public static Board boardWindow;
 
         public static Board getBoardName()
         {
@@ -67,11 +68,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            boardWindow = new Board();
+
             newGameWindow = new NewGame();
             optionsWindow = new Options();
             leaderboardWindow = new Leaderboard();
             helpWindow = new Help();
+            boardWindow = new Board();
 
             this.newGame = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
