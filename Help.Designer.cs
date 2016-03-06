@@ -35,12 +35,13 @@ namespace Checkers
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.textBox2 = new System.Windows.Forms.TextBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // linkLabel1
             // 
             this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(169, 393);
+            this.linkLabel1.Location = new System.Drawing.Point(76, 377);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(60, 13);
             this.linkLabel1.TabIndex = 0;
@@ -99,12 +100,18 @@ namespace Checkers
             this.textBox2.ReadOnly = true;
             this.textBox2.Size = new System.Drawing.Size(143, 189);
             this.textBox2.TabIndex = 5;
-            //This line wouldn't compile on my machine. 
             this.textBox2.Text = resources.GetString("textBox2.Text");
-            //I changed it to this:
-            //this.textBox2.Text = "textBox2.Text";
-            //Not sure what it's supposed to display, but this compiled and displayed "textBox2.Text"
             this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(63, 331);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(87, 19);
+            this.button1.TabIndex = 6;
+            this.button1.Text = "OK";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Help
             // 
@@ -112,6 +119,7 @@ namespace Checkers
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(395, 427);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
@@ -133,5 +141,6 @@ namespace Checkers
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.Button button1;
     }
 }
