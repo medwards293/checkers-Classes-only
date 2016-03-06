@@ -2,7 +2,7 @@
 {
     partial class Options
     {
-         /// <summary>
+        /// <summary>
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
