@@ -12,9 +12,13 @@ namespace Checkers
 {
     partial class Board
     {
+        // label to store backColor to be called when highlighting is off
         Label backColor;
-        List<Label> canMove = new List<Label>();
 
+        // canJump is used to force a player to choose a piece than can jump something
+        List<Label> canJump = new List<Label>();
+
+        // struct to hold board information
         struct checkerBoard
         {
             public bool isOccupied;
@@ -22,6 +26,7 @@ namespace Checkers
             public bool pieceIsKing;
         }
 
+        // variables used both in board.designer.cs and board.cs
         bool player1Turn = true;
         bool highlighting = false;
         int checker1Count = 12;
@@ -32,16 +37,15 @@ namespace Checkers
 
         System.Drawing.Bitmap player1Checker = Checkers.Properties.Resources.checkerRed;
         System.Drawing.Bitmap player2Checker = Checkers.Properties.Resources.checkerGreen;
-
-
-
-
+        
         System.Drawing.Bitmap player1KingChecker = Checkers.Properties.Resources.checkerRedKing;
         System.Drawing.Bitmap player2KingChecker = Checkers.Properties.Resources.checkerGreenKing;
 
+        //checkerboard array to represent 8x8 checkerboard
+        //only every other square is initiated
         checkerBoard[,] board = new checkerBoard[8,8];
 
-
+        //kings piece when given location and what player's it is to make sure not every piece is kinged
         void kingPiece(string player, int col, int row)
         {
             if (player == "player1")
@@ -57,6 +61,7 @@ namespace Checkers
         
         }
 
+        // updates checker to the correct type depending on option choice and if it's a king
         void updateChecker(Label clickedLabel, Label firstClicked)
         {
 
@@ -79,6 +84,8 @@ namespace Checkers
                     clickedLabel.Image = player2Checker;
             }
         }
+
+        //boolean to return if a player1 can jump from firstClicked square to currentCLicked
         bool canJumpPlayer1(Label from, Label to)
         {
             bool jumpAvailable = false;
@@ -111,6 +118,7 @@ namespace Checkers
             return jumpAvailable;
         }
 
+        //boolean to determine if player2 can jump a piece
         bool canJumpPlayer2(Label from, Label to)
         {
             bool jumpAvailable = false;
@@ -140,6 +148,8 @@ namespace Checkers
             }
             return jumpAvailable;
         }
+
+        // used to determine if player1 can jump multiple pieces simultaneously. All jumps must be made
         bool canJumpAgainPlayer1(Label clicked)
         {
             secondJumpAvailable = false;
@@ -197,6 +207,7 @@ namespace Checkers
             return secondJumpAvailable;
         }
 
+        //used to determine if simultaneous jumps are available. All jumps must be taken that can
         bool canJumpAgainPlayer2(Label clicked)
         {
             secondJumpAvailable = false;
@@ -252,6 +263,7 @@ namespace Checkers
             return secondJumpAvailable;
         }
 
+        // setter for options class to change checker options
         public void setPlayer1Checker(System.Drawing.Bitmap checker1, System.Drawing.Bitmap checker1King)
         {
             player1Checker = checker1;
@@ -275,6 +287,7 @@ namespace Checkers
 
         }
 
+        //setter for options class to change color options of checker2
         public void setPlayer2Checker(System.Drawing.Bitmap checker2, System.Drawing.Bitmap checker2King)
         {
             player2Checker = checker2;
@@ -296,6 +309,8 @@ namespace Checkers
             
         }
         
+        //checks if player1 can move a piece from firstClicked to current clicked
+        //jump is called from within if it is a jump
         bool player1CanMove(Label from, Label to)
         {
             bool canMove = false;
@@ -356,6 +371,8 @@ namespace Checkers
             return canMove;
         }
 
+        //checks to see if player2 can make a move from firstClicked to currentClicked
+        //jump is called within if a jump is possible
         bool player2CanMove(Label from, Label to)
         {
             bool canMove = false;
@@ -413,7 +430,8 @@ namespace Checkers
             }
             return canMove;
         }
-
+        // jumps piece removing it from play and decrements checker counter, declaring when a game is over
+        // also calls leaderboard telling game is over and who won
         void jumpPiece(int col, int row)
         {
             Label temp = (Label)tableLayoutPanel1.GetControlFromPosition(col, row);
@@ -429,17 +447,21 @@ namespace Checkers
                 checker1Count--;
 
             if (checker2Count == 0)
-                Form1.getLeaderboardName().winnerDeclared(1);
+                Form1.getLeaderboardName().updateScores(1);
             else if(checker1Count == 0)
-                Form1.getLeaderboardName().winnerDeclared(2);
+                Form1.getLeaderboardName().updateScores(2);
 
         }
+
+        //turns highlighting on/off
         public void setHighlighting()
         {
             if (highlighting == false)
                 highlighting = true;
             else highlighting = false;
         }
+
+        //initialized checkerboard with pieces belonging to player 1 and player 2
         void initializeCheckerBoard()
         {
 
@@ -471,6 +493,7 @@ namespace Checkers
                 board[i, j].pieceIsKing = false;
                 i += 2;
             }
+
             // initialize player 1's checkers
             i = 0;
             j = 5;
@@ -520,6 +543,7 @@ namespace Checkers
             base.Dispose(disposing);
         }
 
+        // set unused squares color
         public void setBackColor(string newColor)
         {
             this.tableLayoutPanel1.BackColor = System.Drawing.Color.FromName(newColor);
@@ -531,6 +555,7 @@ namespace Checkers
 
         }
 
+        //set usable squares color
         public void setForeColor(string newColor)
         {
 
@@ -573,7 +598,8 @@ namespace Checkers
         {
             return this.label1.BackColor.ToString();
         }
-               
+        
+        //highlight moves for player 1
         public void highlightMovesRed(Label clickedLabel)
         {
             Label temp = clickedLabel;
@@ -600,6 +626,7 @@ namespace Checkers
 
         }
 
+        //unhighlights moves for player 1
         public void unHighlightMovesRed(Label label)
         {
             Label temp = label;
@@ -625,6 +652,7 @@ namespace Checkers
             }
         }
 
+        //highlights moves for player 2
         public void highlightMovesGreen(Label clickedLabel)
         {
             Label temp = clickedLabel;
@@ -650,6 +678,8 @@ namespace Checkers
             }
 
         }
+
+        //unhilights moves for player 2
         public void unHighlightMovesGreen(Label label)
         {
             Label temp = label;
