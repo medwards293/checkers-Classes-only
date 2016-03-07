@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -241,56 +241,56 @@ namespace Checkers
                     }
                 case "red":
                     {
-                        Form1.getBoardName().setPlayer1Checker(Properties.Resources.checkerRed);
+                        Form1.getBoardName().setPlayer1Checker(Properties.Resources.checkerRed, Properties.Resources.checkerRedKing);
                         this.pictureBox3.Image = Properties.Resources.checkerRed;
                         newPlayer1Checker = "red";
                         break;
                     }
                 case "orange":
                     {
-                        Form1.getBoardName().setPlayer1Checker(Properties.Resources.checkerOrange);
+                        Form1.getBoardName().setPlayer1Checker(Properties.Resources.checkerOrange, Properties.Resources.checkerOrangeKing);
                         this.pictureBox3.Image = Properties.Resources.checkerOrange;
                         newPlayer1Checker = "orange";
                         break;
                     }
                 case "yellow":
                     {
-                        Form1.getBoardName().setPlayer1Checker(Properties.Resources.checkerYellow);
+                        Form1.getBoardName().setPlayer1Checker(Properties.Resources.checkerYellow, Properties.Resources.checkerYellowKing);
                         this.pictureBox3.Image = Properties.Resources.checkerYellow;
                         newPlayer1Checker = "yellow";
                         break;
                     }
                 case "green":
                     {
-                        Form1.getBoardName().setPlayer1Checker(Properties.Resources.checkerGreen);
+                        Form1.getBoardName().setPlayer1Checker(Properties.Resources.checkerGreen, Properties.Resources.checkerGreenKing);
                         this.pictureBox3.Image = Properties.Resources.checkerGreen;
                         newPlayer1Checker = "green";
                         break;
                     }
                 case "blue":
                     {
-                        Form1.getBoardName().setPlayer1Checker(Properties.Resources.checkerBlue);
+                        Form1.getBoardName().setPlayer1Checker(Properties.Resources.checkerBlue, Properties.Resources.checkerBlueKing);
                         this.pictureBox3.Image = Properties.Resources.checkerBlue;
                         newPlayer1Checker = "blue";
                         break;
                     }
                 case "purple":
                     {
-                        Form1.getBoardName().setPlayer1Checker(Properties.Resources.checkerPurple);
+                        Form1.getBoardName().setPlayer1Checker(Properties.Resources.checkerPurple, Properties.Resources.checkerPurpleKing );
                         this.pictureBox3.Image = Properties.Resources.checkerPurple;
                         newPlayer1Checker = "purple";
                         break;
                     }
                 case "black":
                     {
-                        Form1.getBoardName().setPlayer1Checker(Properties.Resources.checkerBlack);
+                        Form1.getBoardName().setPlayer1Checker(Properties.Resources.checkerBlack, Properties.Resources.checkerBlackKing);
                         this.pictureBox3.Image = Properties.Resources.checkerBlack;
                         newPlayer1Checker = "black";
                         break;
                     }
                 case "white":
                     {
-                        Form1.getBoardName().setPlayer1Checker(Properties.Resources.checkerWhite);
+                        Form1.getBoardName().setPlayer1Checker(Properties.Resources.checkerWhite, Properties.Resources.checkerWhiteKing);
                         this.pictureBox3.Image = Properties.Resources.checkerWhite;
                         newPlayer1Checker = "white";
                         break;
@@ -321,56 +321,56 @@ namespace Checkers
                     }
                 case "red":
                     {
-                        Form1.getBoardName().setPlayer2Checker(Properties.Resources.checkerRed);
+                        Form1.getBoardName().setPlayer2Checker(Properties.Resources.checkerRed, Properties.Resources.checkerRedKing );
                         this.pictureBox4.Image = Properties.Resources.checkerRed;
                         newPlayer2Checker = "red";
                         break;
                     }
                 case "orange":
                     {
-                        Form1.getBoardName().setPlayer2Checker(Properties.Resources.checkerOrange);
+                        Form1.getBoardName().setPlayer2Checker(Properties.Resources.checkerOrange, Properties.Resources.checkerOrangeKing);
                         this.pictureBox4.Image = Properties.Resources.checkerOrange;
                         newPlayer2Checker = "orange";
                         break;
                     }
                 case "yellow":
                     {
-                        Form1.getBoardName().setPlayer2Checker(Properties.Resources.checkerYellow);
+                        Form1.getBoardName().setPlayer2Checker(Properties.Resources.checkerYellow, Properties.Resources.checkerYellowKing );
                         this.pictureBox4.Image = Properties.Resources.checkerYellow;
                         newPlayer2Checker = "yellow";
                         break;
                     }
                 case "green":
                     {
-                        Form1.getBoardName().setPlayer2Checker(Properties.Resources.checkerGreen);
+                        Form1.getBoardName().setPlayer2Checker(Properties.Resources.checkerGreen, Properties.Resources.checkerGreenKing);
                         this.pictureBox4.Image = Properties.Resources.checkerGreen;
                         newPlayer2Checker = "green";
                         break;
                     }
                 case "blue":
                     {
-                        Form1.getBoardName().setPlayer2Checker(Properties.Resources.checkerBlue);
+                        Form1.getBoardName().setPlayer2Checker(Properties.Resources.checkerBlue, Properties.Resources.checkerBlueKing);
                         this.pictureBox4.Image = Properties.Resources.checkerBlue;
                         newPlayer2Checker = "blue";
                         break;
                     }
                 case "purple":
                     {
-                        Form1.getBoardName().setPlayer2Checker(Properties.Resources.checkerPurple);
+                        Form1.getBoardName().setPlayer2Checker(Properties.Resources.checkerPurple, Properties.Resources.checkerPurpleKing);
                         this.pictureBox4.Image = Properties.Resources.checkerPurple;
                         newPlayer2Checker = "purple";
                         break;
                     }
                 case "black":
                     {
-                        Form1.getBoardName().setPlayer2Checker(Properties.Resources.checkerBlack);
+                        Form1.getBoardName().setPlayer2Checker(Properties.Resources.checkerBlack, Properties.Resources.checkerBlackKing);
                         this.pictureBox4.Image = Properties.Resources.checkerBlack;
                         newPlayer2Checker = "black";
                         break;
                     }
                 case "white":
                     {
-                        Form1.getBoardName().setPlayer2Checker(Properties.Resources.checkerWhite);
+                        Form1.getBoardName().setPlayer2Checker(Properties.Resources.checkerWhite, Properties.Resources.checkerWhiteKing);
                         this.pictureBox4.Image = Properties.Resources.checkerWhite;
                         newPlayer2Checker = "white";
                         break;
