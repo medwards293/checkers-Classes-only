@@ -21,6 +21,7 @@ namespace Checkers
         }
         
 
+
         // firstClicked points to the first Label control 
         // that the player clicks, but it will be null 
         // if the player hasn't clicked a squre yet
@@ -29,12 +30,14 @@ namespace Checkers
         // secondClicked points to the second Label control 
         // that the player clicks
         Label secondClicked = null;
-
+        
+                   
+        
         
         private void label_Click(object sender, EventArgs e)
         {
 
-
+           
 
             Label clickedLabel = sender as Label;
 
@@ -379,6 +382,11 @@ namespace Checkers
                     {
                         kingPiece("player2", i, 7);
                     }
+                }
+
+                if (opponentIsAI && !player1Turn)
+                {
+                    AIMove();                
                 }
             }
 
