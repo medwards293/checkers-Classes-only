@@ -36,6 +36,8 @@ namespace Checkers
         bool pieceJumped = false;
         bool mustJump = false;
         bool opponentIsAI = true;
+        bool AICanJump = true;
+        bool AICanMove = true;
 
         System.Drawing.Bitmap player1Checker = Checkers.Properties.Resources.checkerRed;
         System.Drawing.Bitmap player2Checker = Checkers.Properties.Resources.checkerGreen;
@@ -47,6 +49,119 @@ namespace Checkers
         //only every other square is initiated
         checkerBoard[,] board = new checkerBoard[8,8];
 
+        private void AIMove()
+        {
+
+            if (canJump != null) canJump.Clear();
+            bool pieceMoved = true;
+            int i = 0;
+            int j = 0;
+            Label firstClicked = null;
+            Label secondClicked = null;
+
+            for (int e = 0; e <= 7; e++)
+            {
+                for (int f = 0; f <= 7; f++)
+                {
+                    Label temp = (Label)tableLayoutPanel1.GetControlFromPosition(e, f);
+                    if (temp != null && temp.ForeColor == Color.Black && canJumpAgainPlayer2(temp) && !board[e, f].player1Checker && board[e, f].isOccupied)
+                        canJump.Add(temp);
+                }
+            }
+
+            while (!player1Turn)
+            {
+                pieceMoved = false;
+                for (i = 0; i < 8; i++)
+                    for (j = 0; j < 8 ; j++)
+                    {
+                        if(board[j,i].isOccupied && !board[j,i].player1Checker && canJump.Count == 0)
+                            firstClicked = ((Label)this.tableLayoutPanel1.GetControlFromPosition(j,i));
+                        else if(board[j,i].isOccupied && !board[j,i].player1Checker && canJump.Contains((Label)this.tableLayoutPanel1.GetControlFromPosition(j,i)))
+                            firstClicked = ((Label)this.tableLayoutPanel1.GetControlFromPosition(j,i));
+                       
+                        if(firstClicked != null)
+                        for(int k = 7; k >= 0; k--)
+                            for(int l = 7; l >= 0; l--)
+                            {
+                                secondClicked = ((Label)this.tableLayoutPanel1.GetControlFromPosition(l,k));
+                                if(secondClicked != null && !player1Turn)
+                                if (player2CanMove(firstClicked, secondClicked))
+                                { 
+                                    // col2/row2 are grid location for first clicked          
+                        int col2 = this.tableLayoutPanel1.GetColumn(firstClicked);
+                        int row2 = this.tableLayoutPanel1.GetRow(firstClicked);
+
+                        // update new square with checker image and data
+                        updateChecker(secondClicked, firstClicked);
+                        int col = this.tableLayoutPanel1.GetColumn(secondClicked);
+                        int row = this.tableLayoutPanel1.GetRow(secondClicked);
+                        board[col, row].isOccupied = true;
+                        board[col, row].player1Checker = false;
+                        if (board[col2, row2].pieceIsKing) board[col, row].pieceIsKing = true;
+
+                        // clears old location of checker information
+                        board[col2, row2].isOccupied = false;
+                        board[col2, row2].player1Checker = false;
+                        board[col2, row2].pieceIsKing = false;
+                        
+                        // if piece can jump again, new location is highlighted
+                        // if not it becomes player2's turn
+                        if (highlighting) unHighlightMovesGreen(firstClicked);
+                        if (pieceJumped && canJumpAgainPlayer2(secondClicked))
+                        {
+                            firstClicked.Image = null;
+                            firstClicked.BackColor = backColor.BackColor;
+                            secondClicked.BackColor = Color.GreenYellow;
+                            consecutiveJumpAvailable = true;
+                            firstClicked = secondClicked;
+                            secondClicked = null;
+                        }
+                        else
+                        {
+                            player1Turn = true;
+                            pieceMoved = true;
+                            if (firstClicked.Image != null) firstClicked.Image = null;
+                            if (firstClicked.BackColor != null) firstClicked.BackColor = backColor.BackColor;
+                            consecutiveJumpAvailable = false;
+                        }
+                    }
+                    // if a piece was moved rest first/second clicked for next move
+                    // also reset fistClicked image and backcolor
+                    if (pieceMoved == true)
+                    {
+                       
+
+                        firstClicked = null;
+                        secondClicked = null;
+                    }
+                    // if no move was made, reset second clicked to test next move
+                    else
+                    {
+                        secondClicked = null;
+                    }
+                                     
+                
+                                
+                }
+            }
+        }
+            for (i = 0; i <= 7; i += 2)
+            {
+                if (board[i, 7].isOccupied && !board[i, 7].player1Checker)
+                {
+                    kingPiece("player2", i, 7);
+                }
+            }
+    }
+
+        private bool AIJumpPiece()
+        {
+            bool canJump = false;
+
+            return canJump;
+
+        }
         //kings piece when given location and what player's it is to make sure not every piece is kinged
         void kingPiece(string player, int col, int row)
         {
