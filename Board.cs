@@ -36,7 +36,7 @@ namespace Checkers
         
         private void label_Click(object sender, EventArgs e)
         {
-
+            opponentIsAI = (Form1.getNewGameWindowName()).getOpponentIsAI();
            
 
             Label clickedLabel = sender as Label;
